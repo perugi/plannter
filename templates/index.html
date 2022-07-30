@@ -8,37 +8,47 @@ Home
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Name (SYMBOL)</th>
-            <th scope="col">Shares</th>
-            <th scope="col">Current Price</th>
-            <th scope="col">Total</th>
+            <th scope="col">Plant</th>
+            <th scope="col" colspan="3">January</th>
+            <th scope="col" colspan="3">February</th>
+            <th scope="col" colspan="3">March</th>
+            <th scope="col" colspan="3">April</th>
+            <th scope="col" colspan="3">May</th>
+            <th scope="col" colspan="3">June</th>
+            <th scope="col" colspan="3">July</th>
+            <th scope="col" colspan="3">August</th>
+            <th scope="col" colspan="3">September</th>
+            <th scope="col" colspan="3">October</th>
+            <th scope="col" colspan="3">November</th>
+            <th scope="col" colspan="3">December</th>
         </tr>
     </thead>
     <tbody>
-        {% for stock in stocks %}
+        {% for plant in plants %}
 
         <tr>
-            <th scope="row">{{ stock.name }} ({{ stock.symbol }})</th>
-            <td>{{ stock["SUM(quantity)"] }}</td>
-            <td>{{ stock.price | usd}}</td>
-            <td>{{ stock.value | usd}}</td>
+            <th scope="row">{{ plant.name }}</th>
+
+            <!-- TODO: color instead of displaying the text
+            TODO: the index field should not be editable, move editing logic to planner.
+            TODO: withing planner, default is not editable, select is unlocked when user an option. -->
+            {% for todo in plant.todos %}
+            <td>
+                <select>
+                    <option selected>{{ plant.todos[todo] }}</option>
+                    <option disabled>──────────</option>
+                    <option value="None">None</option>
+                    <option value="S">Sejanje</option>
+                    <option value="Pi">Pikiranje</option>
+                    <option value="R">Rast</option>
+                    <option value="Pr">Pridelek</option>
+                </select>
+            </td>
+            {% endfor %}
+
         </tr>
 
         {% endfor %}
     </tbody>
-    <tfoot>
-        <tr>
-            <td></td>
-            <td></td>
-            <th scope="row">Cash</td>
-            <td>{{ cash | usd }}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <th scope="row">TOTAL</td>
-            <td>{{ ((stocks | sum(attribute='value')) + cash ) | usd }}</td>
-        </tr>
-    </tfoot>
 </table>
 {% endblock %}

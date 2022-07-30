@@ -1,4 +1,4 @@
-id,user_id,name,todo_1-1,todo_1-2,todo_1-3,todo_2-1,todo_2-2,todo_2-3,todo_3-1,todo_3-2,todo_3-3,todo_4-1,todo_4-2,todo_4-3,todo_5-1,todo_5-2,todo_5-3,todo_6-1,todo_6-2,todo_6-3,todo_7-1,todo_7-2,todo_7-3,todo_8-1,todo_8-2,todo_8-3,todo_9-1,todo_9-2,todo_9-3,todo_10-1,todo_10-2,todo_10-3,todo_11-1,todo_11-2,todo_11-3,todo_12-1,todo_12-2,todo_12-3
+id,user_id,name,todo_1_1,todo_1_2,todo_1_3,todo_2_1,todo_2_2,todo_2_3,todo_3_1,todo_3_2,todo_3_3,todo_4_1,todo_4_2,todo_4_3,todo_5_1,todo_5_2,todo_5_3,todo_6_1,todo_6_2,todo_6_3,todo_7_1,todo_7_2,todo_7_3,todo_8_1,todo_8_2,todo_8_3,todo_9_1,todo_9_2,todo_9_3,todo_10_1,todo_10_2,todo_10_3,todo_11_1,todo_11_2,todo_11_3,todo_12_1,todo_12_2,todo_12_3
 1,1,Paradižnik,,,,,,,S,S,S,Pi,R,R,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,,,,,,,,,,,
 2,1,Paprika in feferoni,,,,,,S,S,S,Pi,R,R,R,Pr,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,,,,,,,
 3,1,Jajčevec,,,,,,S,S,S,Pi,R,R,R,Pr,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,,,,,,,

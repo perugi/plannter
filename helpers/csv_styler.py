@@ -18,7 +18,7 @@ writer = csv.writer(output_file, delimiter=",")
 title_row = ["id", "user_id", "name"]
 for i in range(1, 13):
     for j in range(1, 4):
-        title_row.append(f"todo_{i}-{j}")
+        title_row.append(f"todo_{i}_{j}")
 
 writer.writerow(title_row)
 
