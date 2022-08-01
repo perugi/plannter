@@ -21,7 +21,15 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///plannter.db")
+# db = SQL("sqlite:///plannter.db")
+
+# Configure the app to use the Heroku Postgres database.
+uri = os.getenv(
+    "postgres://xszrtixzwpmvvc:7de1ca1b88b8058eaffd071bfb6dca12346389fc655a914fb823bedb921e885c@ec2-52-208-164-5.eu-west-1.compute.amazonaws.com:5432/d8gheu64ohd5vq"
+)
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://")
+db = SQL(uri)
 
 
 @app.after_request
