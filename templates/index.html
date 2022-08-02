@@ -5,50 +5,53 @@ Home
 {% endblock %}
 
 {% block main %}
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Plant</th>
-            <th scope="col" colspan="3">January</th>
-            <th scope="col" colspan="3">February</th>
-            <th scope="col" colspan="3">March</th>
-            <th scope="col" colspan="3">April</th>
-            <th scope="col" colspan="3">May</th>
-            <th scope="col" colspan="3">June</th>
-            <th scope="col" colspan="3">July</th>
-            <th scope="col" colspan="3">August</th>
-            <th scope="col" colspan="3">September</th>
-            <th scope="col" colspan="3">October</th>
-            <th scope="col" colspan="3">November</th>
-            <th scope="col" colspan="3">December</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for plant in plants %}
+<div class="container">
+    <table class="plants">
+        <thead>
+            <tr class="plants_row">
+                <th class="plants_name" scope="col">Plant</th>
+                <th class="plants_data" scope="col" colspan="3">January</th>
+                <th class="plants_data" scope="col" colspan="3">February</th>
+                <th class="plants_data" scope="col" colspan="3">March</th>
+                <th class="plants_data" scope="col" colspan="3">April</th>
+                <th class="plants_data" scope="col" colspan="3">May</th>
+                <th class="plants_data" scope="col" colspan="3">June</th>
+                <th class="plants_data" scope="col" colspan="3">July</th>
+                <th class="plants_data" scope="col" colspan="3">August</th>
+                <th class="plants_data" scope="col" colspan="3">September</th>
+                <th class="plants_data" scope="col" colspan="3">October</th>
+                <th class="plants_data" scope="col" colspan="3">November</th>
+                <th class="plants_data" scope="col" colspan="3">December</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plant in plants %}
 
-        <tr>
-            <th scope="row">{{ plant.name }}</th>
+            <tr class="plants_row">
+                <th class="plants_name" scope="row">{{ plant.name }}</th>
 
-            <!-- TODO: color instead of displaying the text
-            TODO: the index field should not be editable, move editing logic to planner.
-            TODO: withing planner, default is not editable, select is unlocked when user an option. -->
-            {% for todo in plant.todos %}
-            <td>
-                <select>
-                    <option selected>{{ plant.todos[todo] }}</option>
-                    <option disabled>──────────</option>
-                    <option value="None">None</option>
-                    <option value="S">Sejanje</option>
-                    <option value="Pi">Pikiranje</option>
-                    <option value="R">Rast</option>
-                    <option value="Pr">Pridelek</option>
-                </select>
-            </td>
+                {% for todo in plant.todos %}
+
+                {% if plant.todos[todo] == None %}
+                <td class="plants_data nowork"></td>
+                {% elif plant.todos[todo] == 'S' %}
+                <td class="plants_data sowing"></td>
+                {% elif plant.todos[todo] == 'Pi' %}
+                <td class="plants_data seedling"></td>
+                {% elif plant.todos[todo] == 'Pr' %}
+                <td class="plants_data transplanting"></td>
+                {% elif plant.todos[todo] == 'R' %}
+                <td class="plants_data growth"></td>
+                {% elif plant.todos[todo] == 'P' %}
+                <td class="plants_data harvest"></td>
+                {% endif %}
+
+                {% endfor %}
+
+            </tr>
+
             {% endfor %}
-
-        </tr>
-
-        {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 {% endblock %}
