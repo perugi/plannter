@@ -70,7 +70,30 @@ def index():
 def planner():
     """Plan the garden by selecting the plants to be grown."""
 
-    return apology("TODO")
+    VALID_MONTH_NAMES = []
+    for i in range(1, 13):
+        for j in range(1, 4):
+            VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
+
+    rows = db.execute(
+        "SELECT *\
+           FROM plants\
+          WHERE user_id = 1",
+    )
+
+    # Prepare the list to send to the client: in order to format the table, we want to
+    # send dictionaries with two keys - name and todos, which is a dictionary of the
+    # particular monthly todos.
+    plants = []
+    for row in rows:
+        plant = {}
+        plant["name"] = row["name"]
+        plant["id"] = row["id"]
+        todos = {k: row[k] for k in VALID_MONTH_NAMES}
+        plant["todos"] = todos
+        plants.append(plant)
+
+    return render_template("planner.html", plants=plants)
 
 
 @app.route("/weekly")

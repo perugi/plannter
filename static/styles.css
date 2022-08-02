@@ -63,3 +63,7 @@ nav .navbar-brand .green {
     width: 10%;
     border: 1px solid;
 }
+
+#planner_select {
+    width: 4%;
+}
