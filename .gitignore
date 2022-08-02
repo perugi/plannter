@@ -131,3 +131,4 @@ dmypy.json
 # Project specific
 plannter.db
 flask_session/
+helpers/env.sh
