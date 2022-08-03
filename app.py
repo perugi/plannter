@@ -6,7 +6,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers.helpers import apology, login_required
+from helpers.helpers import apology, login_required, prepare_plant_data
 
 # Configure application
 app = Flask(__name__)
@@ -19,11 +19,19 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Configure the app to use the local sqlite database.
+# db = SQL("sqlite:///plannter.db")
+
 # Configure the app to use the Heroku Postgres database.
 uri = os.getenv("DATABASE_URL")
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://")
 db = SQL(uri)
+
+VALID_MONTH_NAMES = []
+for i in range(1, 13):
+    for j in range(1, 4):
+        VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
 
 
 @app.after_request
@@ -39,11 +47,6 @@ def after_request(response):
 @login_required
 def index():
     """Show the user-configured garden"""
-
-    VALID_MONTH_NAMES = []
-    for i in range(1, 13):
-        for j in range(1, 4):
-            VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
 
     rows = db.execute(
         "SELECT *\
@@ -70,7 +73,33 @@ def index():
 def planner():
     """Plan the garden by selecting the plants to be grown."""
 
-    return apology("TODO")
+    if request.method == "POST":
+
+        # Get the plants, selected by the user and format them into a comma separated
+        # string, to be stored in the selected_plants database.
+        user_selection = ""
+        for key in request.form.keys():
+            user_selection += key + ","
+        user_selection = user_selection[:-1]
+
+        db.execute(
+            "UPDATE selected_plants\
+                SET selected_plants = ?\
+              WHERE user_id = ?",
+            user_selection,
+            session["user_id"],
+        )
+
+        # Redirect user to home page
+        return redirect("/")
+
+    else:
+
+        plants, selected_plants = prepare_plant_data(db, VALID_MONTH_NAMES)
+
+        return render_template(
+            "planner.html", plants=plants, selected_plants=selected_plants
+        )
 
 
 @app.route("/weekly")
@@ -160,6 +189,20 @@ def register():
         # The username already exists in the database
         except ValueError:
             return apology("username already taken", 400)
+
+        user_id = db.execute(
+            "SELECT id\
+               FROM users\
+              WHERE username=?",
+            request.form.get("username"),
+        )
+
+        # Create an entry for the user in the selected_plants database
+        db.execute(
+            "INSERT INTO selected_plants (user_id, selected_plants)\
+             VALUES (?, NULL);",
+            user_id[0]["id"],
+        )
 
         return redirect("/login")
 

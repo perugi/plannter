@@ -8,16 +8,26 @@ from functools import wraps
 
 def apology(message, code=400):
     """Render message as an apology to user."""
+
     def escape(s):
         """
         Escape special characters.
 
         https://github.com/jacebrowning/memegen#special-characters
         """
-        for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-                         ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
+        for old, new in [
+            ("-", "--"),
+            (" ", "-"),
+            ("_", "__"),
+            ("?", "~q"),
+            ("%", "~p"),
+            ("#", "~h"),
+            ("/", "~s"),
+            ('"', "''"),
+        ]:
             s = s.replace(old, new)
         return s
+
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
 
@@ -27,38 +37,51 @@ def login_required(f):
 
     https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
     """
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
             return redirect("/login")
         return f(*args, **kwargs)
+
     return decorated_function
 
 
-def lookup(symbol):
-    """Look up quote for symbol."""
+def prepare_plant_data(db, VALID_MONTH_NAMES):
+    """Query the databases to prepare the plant data for display in tables."""
 
-    # Contact API
-    try:
-        api_key = os.environ.get("API_KEY")
-        url = f"https://cloud.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/quote?token={api_key}"
-        response = requests.get(url)
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
+    # Select all the default (user_id 1, created by admin) and user custom plants.
+    all_plants = db.execute(
+        "SELECT *\
+           FROM plants\
+          WHERE user_id = 1\
+             OR user_id = ?",
+        session["user_id"],
+    )
 
-    # Parse response
-    try:
-        quote = response.json()
-        return {
-            "name": quote["companyName"],
-            "price": float(quote["latestPrice"]),
-            "symbol": quote["symbol"]
-        }
-    except (KeyError, TypeError, ValueError):
-        return None
+    # Prepare the list to send to the client: in order to format the table, we want to
+    # send dictionaries with two keys - name and todos, which is a dictionary of the
+    # particular monthly todos.
+    plants = []
+    for row in all_plants:
+        plant = {}
+        plant["id"] = row["id"]
+        plant["name"] = row["name"]
+        todos = {k: row[k] for k in VALID_MONTH_NAMES}
+        plant["todos"] = todos
+        plants.append(plant)
 
+    selected_plants = db.execute(
+        "SELECT selected_plants\
+            FROM selected_plants\
+            WHERE user_id = ?",
+        session["user_id"],
+    )
 
-def usd(value):
-    """Format value as USD."""
-    return f"${value:,.2f}"
+    # The selected plants are stored in as a comma separated string, decode into a list.
+    if selected_plants[0]["selected_plants"]:
+        selected_plants = [
+            int(id) for id in selected_plants[0]["selected_plants"].split(",")
+        ]
+
+    return plants, selected_plants
