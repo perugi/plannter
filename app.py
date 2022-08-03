@@ -19,6 +19,9 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Configure the app to use the local sqlite database.
+# db = SQL("sqlite:///plannter.db")
+
 # Configure the app to use the Heroku Postgres database.
 uri = os.getenv("DATABASE_URL")
 if uri.startswith("postgres://"):
@@ -183,6 +186,20 @@ def register():
         # The username already exists in the database
         except ValueError:
             return apology("username already taken", 400)
+
+        user_id = db.execute(
+            "SELECT id\
+               FROM users\
+              WHERE username=?",
+            request.form.get("username"),
+        )
+
+        # Create an entry for the user in the selected_plants database
+        db.execute(
+            "INSERT INTO selected_plants (user_id, selected_plants)\
+             VALUES (?, NULL);",
+            user_id[0]["id"],
+        )
 
         return redirect("/login")
 
