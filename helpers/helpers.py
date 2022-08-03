@@ -53,9 +53,9 @@ def prepare_plant_data(db, VALID_MONTH_NAMES):
     # Select all the default (user_id 1, created by admin) and user custom plants.
     all_plants = db.execute(
         "SELECT *\
-            FROM plants\
-            WHERE user_id = 1\
-                OR user_id = ?",
+           FROM plants\
+          WHERE user_id = 1\
+             OR user_id = ?",
         session["user_id"],
     )
 
@@ -79,8 +79,9 @@ def prepare_plant_data(db, VALID_MONTH_NAMES):
     )
 
     # The selected plants are stored in as a comma separated string, decode into a list.
-    selected_plants = [
-        int(id) for id in selected_plants[0]["selected_plants"].split(",")
-    ]
+    if selected_plants[0]["selected_plants"]:
+        selected_plants = [
+            int(id) for id in selected_plants[0]["selected_plants"].split(",")
+        ]
 
     return plants, selected_plants
