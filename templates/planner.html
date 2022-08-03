@@ -11,7 +11,6 @@ Home
             <thead>
                 <tr class="plants_row">
                     <th class="plants_data" id="planner_select" scope="col">Use</th>
-                    <th class="plants_name" scope="col">Id</th>
                     <th class="plants_name" scope="col">Plant</th>
                     <th class="plants_data" scope="col" colspan="3">January</th>
                     <th class="plants_data" scope="col" colspan="3">February</th>
@@ -39,7 +38,6 @@ Home
                         {% endif %}
                     </td>
 
-                    <td class="plants_name">{{ plant.id }}</td>
                     <td class="plants_name">{{ plant.name }}</td>
 
                     {% for todo in plant.todos %}
