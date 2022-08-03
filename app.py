@@ -96,8 +96,6 @@ def planner():
     else:
 
         plants, selected_plants = prepare_plant_data(db, VALID_MONTH_NAMES)
-        print(plants, file=sys.stderr)
-        print(selected_plants, file=sys.stderr)
 
         return render_template(
             "planner.html", plants=plants, selected_plants=selected_plants
