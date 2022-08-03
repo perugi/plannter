@@ -48,17 +48,32 @@ def after_request(response):
 def index():
     """Show the user-configured garden"""
 
-    rows = db.execute(
+    VALID_MONTH_NAMES = []
+    for i in range(1, 13):
+        for j in range(1, 4):
+            VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
+
+    # Select all the default (user_id 1, created by admin) and user custom plants.
+    all_plants = db.execute(
         "SELECT *\
            FROM plants\
-          WHERE user_id = 1",
+          WHERE user_id = 1\
+             OR user_id = ?",
+        session["user_id"],
+    )
+
+    selected_plants = db.execute(
+        "SELECT selected_plants\
+           FROM selected_plants\
+          WHERE user_id = ?",
+        session["user_id"],
     )
 
     # Prepare the list to send to the client: in order to format the table, we want to
     # send dictionaries with two keys - name and todos, which is a dictionary of the
     # particular monthly todos.
     plants = []
-    for row in rows:
+    for row in all_plants:
         plant = {}
         plant["name"] = row["name"]
         todos = {k: row[k] for k in VALID_MONTH_NAMES}
