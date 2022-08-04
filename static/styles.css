@@ -35,6 +35,7 @@ nav .navbar-brand .green {
 
 .transplanting {
     background-color: black;
+    color: white;
 }
 
 .growth {
@@ -46,7 +47,6 @@ nav .navbar-brand .green {
 }
 
 .plants {
-    width: 100%;
     border: 1px solid;
 }
 
@@ -55,8 +55,9 @@ nav .navbar-brand .green {
 }
 
 .plants_data {
-    width: 2.5%;
+    width: 2%;
     border: 1px solid;
+    border-color: white;
 }
 
 .plants_name {
