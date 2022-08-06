@@ -5,53 +5,86 @@ Home
 {% endblock %}
 
 {% block main %}
+
+{% if plants == [] %}
+<p class="text-center">No plants selected. Visit the <a href="/planner">Planner</a> to do so.</a></p>
+
+{% else %}
 <div class="container">
-    <table class="plants">
-        <thead>
-            <tr class="plants_row">
-                <th class="plants_name" scope="col">Plant</th>
-                <th class="plants_data" scope="col" colspan="3">January</th>
-                <th class="plants_data" scope="col" colspan="3">February</th>
-                <th class="plants_data" scope="col" colspan="3">March</th>
-                <th class="plants_data" scope="col" colspan="3">April</th>
-                <th class="plants_data" scope="col" colspan="3">May</th>
-                <th class="plants_data" scope="col" colspan="3">June</th>
-                <th class="plants_data" scope="col" colspan="3">July</th>
-                <th class="plants_data" scope="col" colspan="3">August</th>
-                <th class="plants_data" scope="col" colspan="3">September</th>
-                <th class="plants_data" scope="col" colspan="3">October</th>
-                <th class="plants_data" scope="col" colspan="3">November</th>
-                <th class="plants_data" scope="col" colspan="3">December</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for plant in plants %}
+    <div class="row">
+        <div class="col">
+            <table class="plants">
+                <tr>
+                    <td class="plants_data nowork">No work</td>
+                </tr>
+                <tr>
+                    <td class="plants_data sowing">Sow for seedlings</td>
+                </tr>
+                <tr>
+                    <td class="plants_data seedling">Prepare seedlings</td>
+                </tr>
+                <tr>
+                    <td class="plants_data transplanting">Transplant/Sow to garden</td>
+                </tr>
+                <tr>
+                    <td class="plants_data growth">Plant growth</td>
+                </tr>
+                <tr>
+                    <td class="plants_data harvest">Harvest</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-10">
+            <div class="table-responsive">
+                <table class="plants">
+                    <thead>
+                        <tr class="plants_row">
+                            <th class="plants_name" scope="col">Plant</th>
+                            <th class="plants_name" scope="col" colspan="3">Jan</th>
+                            <th class="plants_name" scope="col" colspan="3">Feb</th>
+                            <th class="plants_name" scope="col" colspan="3">Mar</th>
+                            <th class="plants_name" scope="col" colspan="3">Apr</th>
+                            <th class="plants_name" scope="col" colspan="3">May</th>
+                            <th class="plants_name" scope="col" colspan="3">Jun</th>
+                            <th class="plants_name" scope="col" colspan="3">Jul</th>
+                            <th class="plants_name" scope="col" colspan="3">Aug</th>
+                            <th class="plants_name" scope="col" colspan="3">Sep</th>
+                            <th class="plants_name" scope="col" colspan="3">Oct</th>
+                            <th class="plants_name" scope="col" colspan="3">Nov</th>
+                            <th class="plants_name" scope="col" colspan="3">Dec</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plant in plants %}
 
-            <tr class="plants_row">
-                <th class="plants_name" scope="row">{{ plant.name }}</th>
+                        <tr class="plants_row">
+                            <td class="plants_name" scope="row">{{ plant.name }}</td>
 
-                {% for todo in plant.todos %}
+                            {% for todo in plant.todos %}
 
-                {% if plant.todos[todo] == None %}
-                <td class="plants_data nowork"></td>
-                {% elif plant.todos[todo] == 'S' %}
-                <td class="plants_data sowing"></td>
-                {% elif plant.todos[todo] == 'Pi' %}
-                <td class="plants_data seedling"></td>
-                {% elif plant.todos[todo] == 'Pr' %}
-                <td class="plants_data transplanting"></td>
-                {% elif plant.todos[todo] == 'R' %}
-                <td class="plants_data growth"></td>
-                {% elif plant.todos[todo] == 'P' %}
-                <td class="plants_data harvest"></td>
-                {% endif %}
+                            {% if plant.todos[todo] == None %}
+                            <td class="plants_data nowork"></td>
+                            {% elif plant.todos[todo] == 'S' %}
+                            <td class="plants_data sowing"></td>
+                            {% elif plant.todos[todo] == 'Pi' %}
+                            <td class="plants_data seedling"></td>
+                            {% elif plant.todos[todo] == 'Pr' %}
+                            <td class="plants_data transplanting"></td>
+                            {% elif plant.todos[todo] == 'R' %}
+                            <td class="plants_data growth"></td>
+                            {% elif plant.todos[todo] == 'P' %}
+                            <td class="plants_data harvest"></td>
+                            {% endif %}
 
-                {% endfor %}
+                            {% endfor %}
 
-            </tr>
+                        </tr>
 
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endblock %}
