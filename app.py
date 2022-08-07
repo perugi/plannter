@@ -5,6 +5,7 @@ from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import date
 
 from helpers.helpers import apology, login_required, prepare_plant_data
 
@@ -95,7 +96,31 @@ def planner():
 def weekly():
     """Show the user a weekly summary of work to do in the garden."""
 
-    return apology("TODO")
+    plants, selected_plants = prepare_plant_data(db, VALID_MONTH_NAMES)
+
+    # Keep only the selected plants in the data to be sent to the client.
+    plants = [plant for plant in plants if plant["id"] in selected_plants]
+    print(plants, file=sys.stderr)
+
+    today = date.today()
+    # Find the part of the month we are in.
+    if today.day <= 10:
+        month_period = 1
+    elif today.day <= 20:
+        month_period = 2
+    else:
+        month_period = 3
+
+    weekly_todos = {"S": [], "Pi": [], "Pr": [], "R": [], "P": []}
+    # Filter out the correct todo, based on the part of the month we are in.
+    for plant in plants:
+        if not plant["todos"][f"todo_{today.month}_{month_period}"] == None:
+            weekly_todos[plant["todos"][f"todo_{today.month}_{month_period}"]].append(
+                plant["name"]
+            )
+
+    print(weekly_todos, file=sys.stderr)
+    return render_template("weekly.html", weekly_todos=weekly_todos)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -147,6 +172,48 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
+
+@app.route("/password_change", methods=["GET", "POST"])
+def password_register():
+    """Allow the user to change their password"""
+
+    if request.method == "POST":
+
+        # Ensure username was submitted
+        if (
+            not request.form.get("password_old")
+            or not request.form.get("password_new")
+            or not request.form.get("password_confirm")
+        ):
+            return apology("must provide password", 403)
+
+        # Ensure that the old password is correct.
+        rows = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+
+        # Ensure username exists and password is correct
+        if len(rows) != 1 or not check_password_hash(
+            rows[0]["hash"], request.form.get("password_old")
+        ):
+            return apology("old password is not correct", 403)
+
+        # Ensure the password and its confirmation matches
+        elif request.form.get("password_new") != request.form.get("password_confirm"):
+            return apology("passwords do not match", 400)
+
+        # Store the username and hashed password in the database
+        db.execute(
+            "UPDATE users\
+                SET hash = ?\
+                WHERE id = ?;",
+            generate_password_hash(request.form.get("password_new")),
+            session["user_id"],
+        )
+
+        return redirect("/")
+
+    else:
+        return render_template("password_change.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
