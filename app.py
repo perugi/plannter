@@ -100,7 +100,6 @@ def weekly():
 
     # Keep only the selected plants in the data to be sent to the client.
     plants = [plant for plant in plants if plant["id"] in selected_plants]
-    print(plants, file=sys.stderr)
 
     today = date.today()
     # Find the part of the month we are in.
@@ -119,7 +118,6 @@ def weekly():
                 plant["name"]
             )
 
-    print(weekly_todos, file=sys.stderr)
     return render_template("weekly.html", weekly_todos=weekly_todos)
 
 
