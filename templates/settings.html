@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block script %}
+<script src="/static/mail_fields.js"></script>
+{% endblock %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block main %}
+<div class="container text-start">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <form method="post">
+                <table class="table">
+                    <tr>
+                        <th>
+                            Mail notifications:
+                        </th>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_mon" value="notify_mon">
+                                <label class="form-check-label" for="notify_mon">Mon</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_tue" value="notify_tue">
+                                <label class="form-check-label" for="notify_tue">Tue</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_wed" value="notify_wed">
+                                <label class="form-check-label" for="notify_wed">Wed</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_thu" value="notify_thu">
+                                <label class="form-check-label" for="notify_thu">Thu</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_fri" value="notify_fri">
+                                <label class="form-check-label" for="notify_fri">Fri</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_sat" value="notify_sat">
+                                <label class="form-check-label" for="notify_sat">Sat</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="notify_sun" value="notify_sun">
+                                <label class="form-check-label" for="notify_sun">Sun</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>E-mail:</th>
+                        <td>
+                            <div id="mail_fields">
+                                <div id="mail_group_1" class="input-group mb-3">
+                                    <input autocomplete="off" autofocus class="form-control" id="mail_1" name="mail_1"
+                                        placeholder="name@example.com" type="email">
+                                    <button class="btn btn-outline-secondary" onclick="addMailField(2)" type="button"
+                                        id="add_mail">+</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <p></p>
+                <div class="text-center">
+                    <button class="btn btn-primary mt3" type="submit">Save settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

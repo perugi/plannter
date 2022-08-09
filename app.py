@@ -152,6 +152,7 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        session["username"] = rows[0]["username"]
 
         # Redirect user to home page
         return redirect("/")
@@ -173,6 +174,7 @@ def logout():
 
 
 @app.route("/password_change", methods=["GET", "POST"])
+@login_required
 def password_register():
     """Allow the user to change their password"""
 
@@ -261,3 +263,14 @@ def register():
 
     else:
         return render_template("register.html")
+
+
+@app.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    """Allow the user to change the account settings."""
+
+    if request.method == "POST":
+        print(request.form.get(), file=sys.stderr)
+
+    return render_template("settings.html")

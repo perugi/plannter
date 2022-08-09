@@ -57,9 +57,11 @@ Home
                             <tr class="plants_row">
                                 <td>
                                     {% if plant.id in selected_plants %}
-                                    <input type="checkbox" id="{{ plant.id }}" name="{{ plant.id }}" checked>
+                                    <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
+                                        name="{{ plant.id }}" checked>
                                     {% else %}
-                                    <input type="checkbox" id="{{ plant.id }}" name="{{ plant.id }}">
+                                    <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
+                                        name="{{ plant.id }}">
                                     {% endif %}
                                 </td>
 
