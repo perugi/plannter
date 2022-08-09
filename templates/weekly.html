@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Weekly
+{% endblock %}
+
+{% block main %}
+{% if plants == [] %}
+<p class="text-center">No plants selected. Visit the <a href="/planner">Planner</a> to do so.</a></p>
+{% else %}
+<div class="container text-start">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <table class="table">
+                {% for todo, plants in weekly_todos.items() %}
+                {% if plants|length != 0 %}
+                <tr>
+                    <th>
+                        {% if todo == 'S' %}
+                        Sow for seedlings:
+                        {% elif todo == 'Pi' %}
+                        Prepare seedlings:
+                        {% elif todo == 'Pr' %}
+                        Transplant/Sow to garden:
+                        {% elif todo == 'R' %}
+                        Plant growth:
+                        {% elif todo == 'P' %}
+                        Harvest:
+                        {% endif %}
+                    </th>
+                    <td>
+                        {{', '.join(plants)|safe}}
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}
