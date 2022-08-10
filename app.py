@@ -271,6 +271,8 @@ def settings():
     """Allow the user to change the account settings."""
 
     if request.method == "POST":
-        print(request.form.get(), file=sys.stderr)
+        print(request.form, file=sys.stderr)
+        for key, value in request.form.items():
+            print(key, value, file=sys.stderr)
 
     return render_template("settings.html")
