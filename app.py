@@ -79,6 +79,9 @@ def planner():
             session["user_id"],
         )
 
+        # Flash the message for the user
+        flash("Garden successfully updated!")
+
         # Redirect user to home page
         return redirect("/")
 
@@ -275,4 +278,11 @@ def settings():
         for key, value in request.form.items():
             print(key, value, file=sys.stderr)
 
-    return render_template("settings.html")
+        # Notification for the user that the settings have been updated.
+        flash("Settings successfully updated!")
+
+        # Redirect user to home page
+        return redirect("/")
+
+    else:
+        return render_template("settings.html")
