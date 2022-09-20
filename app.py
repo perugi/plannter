@@ -1,4 +1,5 @@
 import os
+import sys
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -8,7 +9,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
 from flask_apscheduler import APScheduler
 
-from helpers.helpers import apology, login_required, prepare_plant_data
+from helpers.helpers import (
+    apology,
+    login_required,
+    prepare_plant_data,
+    prepare_weekly_todos,
+)
 
 # Configure application
 app = Flask(__name__)
@@ -38,10 +44,11 @@ app.config["MAIL_USE_SSL"] = True
 mail.init_app(app)
 
 # Configure the app to use the scheduler and initialize it
-scheduler = APScheduler
+scheduler = APScheduler()
 scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
+MAIL_NOTIFICATIONS_HOUR = 20
 
 VALID_MONTH_NAMES = []
 for i in range(1, 13):
@@ -49,6 +56,73 @@ for i in range(1, 13):
         VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
 
 WEEK_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+TASK_NAMES = {
+    "S": "Sow for seedlings",
+    "Pi": "Prepare seedlings",
+    "Pr": "Transplant/Sow to garden",
+    "R": "Plant growth",
+    "P": "Harvest",
+}
+
+
+@scheduler.task(
+    "cron",
+    id="mail_notifications",
+    week="*",
+    day_of_week="*",
+    hour=MAIL_NOTIFICATIONS_HOUR,
+)
+def mail_notifications():
+
+    with scheduler.app.app_context():
+
+        rows = db.execute("SELECT * FROM settings")
+        today = date.today()
+
+        for user_settings in rows:
+            if user_settings["notifications"]:
+                # Check if the user has a notification set for today.
+                if WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
+                    username = db.execute(
+                        "SELECT username FROM users WHERE id = ?",
+                        user_settings["user_id"],
+                    )[0]["username"]
+
+                    weekly_todos = prepare_weekly_todos(
+                        db, VALID_MONTH_NAMES, user_settings["user_id"]
+                    )
+
+                    msg_subject = "Plannter Task Summary for " + today.strftime(
+                        "%A, %b %-d"
+                    )
+
+                    msg_body = f"""
+                    <p>Hello, {username}!</p>
+                    <p>This is a summary of your weekly garden tasks:</p>
+                    """
+
+                    for task in weekly_todos:
+                        if weekly_todos[task]:
+                            msg_body += f"<p><strong>{TASK_NAMES[task]}:</strong> "
+                            for plant in weekly_todos[task]:
+                                msg_body += f"{plant}, "
+                            msg_body = msg_body[:-2] + "</p>"
+
+                    msg_body += """
+                    <p>&nbsp;</p>
+                    <p>--</p>
+                    <p>To configure your garden, visit the Plannter <a href="https://plannter-web.herokuapp.com/planner">Planning</a> page. To modify the notification settings, visit the Plannter <a href="https://plannter-web.herokuapp.com/settings">Settings</a>.</p>
+                    """
+
+                    recipients = user_settings["emails"].split(",")
+                    for recipient in recipients:
+                        msg = Message(
+                            msg_subject,
+                            recipients=[recipient],
+                            sender=("Plannter Notifications", "plannter.web@gmail.com"),
+                        )
+                        msg.html = msg_body
+                        mail.send(msg)
 
 
 @app.after_request
@@ -65,7 +139,9 @@ def after_request(response):
 def index():
     """Show the user-configured garden"""
 
-    plants, selected_plants = prepare_plant_data(db, VALID_MONTH_NAMES)
+    plants, selected_plants = prepare_plant_data(
+        db, VALID_MONTH_NAMES, session["user_id"]
+    )
 
     # Keep only the selected plants in the data to be sent to the client.
     plants = [plant for plant in plants if plant["id"] in selected_plants]
@@ -103,7 +179,9 @@ def planner():
 
     else:
 
-        plants, selected_plants = prepare_plant_data(db, VALID_MONTH_NAMES)
+        plants, selected_plants = prepare_plant_data(
+            db, VALID_MONTH_NAMES, session["user_id"]
+        )
 
         return render_template(
             "planner.html", plants=plants, selected_plants=selected_plants
@@ -115,28 +193,9 @@ def planner():
 def weekly():
     """Show the user a weekly summary of work to do in the garden."""
 
-    plants, selected_plants = prepare_plant_data(db, VALID_MONTH_NAMES)
+    weekly_todos = prepare_weekly_todos(db, VALID_MONTH_NAMES, session["user_id"])
 
-    # Keep only the selected plants in the data to be sent to the client.
-    plants = [plant for plant in plants if plant["id"] in selected_plants]
-
-    today = date.today()
-    # Find the part of the month we are in.
-    if today.day <= 10:
-        month_period = 1
-    elif today.day <= 20:
-        month_period = 2
-    else:
-        month_period = 3
-
-    weekly_todos = {"S": [], "Pi": [], "Pr": [], "R": [], "P": []}
-    # Filter out the correct todo, based on the part of the month we are in.
-    for plant in plants:
-        if not plant["todos"][f"todo_{today.month}_{month_period}"] == None:
-            weekly_todos[plant["todos"][f"todo_{today.month}_{month_period}"]].append(
-                plant["name"]
-            )
-
+    # TODO: Pass the weekly todos already with full strings (as per TASK_NAMES dict), in order to avoid hardcoding in html template.
     return render_template("weekly.html", weekly_todos=weekly_todos)
 
 
@@ -309,16 +368,18 @@ def settings():
                 notifications += key[7:] + ","
         notifications = notifications[:-1]
 
+        emails = ""
+        for i in range(1, 6):
+            if request.form.get(f"email_{i}"):
+                emails += request.form.get(f"email_{i}") + ","
+        emails = emails[:-1]
+
         db.execute(
             "UPDATE settings\
-                SET notifications = ?, email_1 = ?, email_2 = ?, email_3 = ?, email_4 = ?, email_5 = ?\
+                SET notifications = ?, emails = ?\
               WHERE user_id = ?",
             notifications,
-            request.form.get("email_1"),
-            request.form.get("email_2"),
-            request.form.get("email_3"),
-            request.form.get("email_4"),
-            request.form.get("email_5"),
+            emails,
             session["user_id"],
         )
 
@@ -338,29 +399,20 @@ def settings():
             session["user_id"],
         )
 
-        # Extract the emails into a dictionary.
-        emails = {}
-        for column in settings[0]:
-            if column[:5] == "email" and settings[0][column]:
-                emails[column] = settings[0][column]
+        # Extract the emails into a list.
+        emails = settings[0]["emails"].split(",")
 
         # Generate a dictionary with a key for each day, True if notification is set, False if not.
-        set_notifications = settings[0]["notifications"].split(",")
+        try:
+            set_notifications = settings[0]["notifications"].split(",")
+        except AttributeError:
+            set_notifications = []
         notifications = {}
         for day in WEEK_DAYS:
             if day in set_notifications:
                 notifications[day] = True
             else:
                 notifications[day] = False
-
-        # TODO remove this
-        msg = Message(
-            "Hello from the other side!",
-            recipients=["dominik.perusko@gmail.com"],
-            sender="plannter.web@gmail.com",
-        )
-        msg.body = "This is a test mail, sent from Flask."
-        mail.send(msg)
 
         return render_template(
             "settings.html",

@@ -40,7 +40,7 @@ Settings
                         </td>
                     </tr>
                     <tr>
-                        <th>E-mail:</th>
+                        <th>E-mail(s):</th>
                         <td>
                             <div id="mail_fields">
                                 {% if not emails %}
@@ -55,14 +55,14 @@ Settings
                                 {% for i in range(1, no_emails) %}
                                 <div id="{{ 'mail_group_' ~ i }}" class="input-group mb-3">
                                     <input autocomplete="off" autofocus class="form-control" id="{{ 'email_' ~ i }}"
-                                        name="{{ 'email_' ~ i }}" value="{{ emails['email_' ~ i] }}" type="email">
+                                        name="{{ 'email_' ~ i }}" value="{{ emails[i-1] }}" type="email">
                                 </div>
                                 {% endfor %}
                                 <!-- The last e-mail needs the -/+ buttons -->
                                 <div id="{{ 'mail_group_' ~ no_emails }}" class="input-group mb-3">
                                     <input autocomplete="off" autofocus class="form-control"
                                         id="{{ 'email_' ~ no_emails }}" name="{{ 'email_' ~ no_emails }}"
-                                        value="{{ emails['email_' ~ no_emails] }}" type="email">
+                                        value="{{ emails[no_emails-1] }}" type="email">
                                     {% if no_emails != 1 %}
                                     <button class="btn btn-outline-secondary"
                                         onclick="removeMailField('{{ no_emails }}')" type="button"
