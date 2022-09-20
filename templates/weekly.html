@@ -17,15 +17,15 @@ Weekly
                 <tr>
                     <th>
                         {% if todo == 'S' %}
-                        Sow for seedlings:
+                        {{ gettext('Sow for seedlings') }}:
                         {% elif todo == 'Pi' %}
-                        Prepare seedlings:
+                        {{ gettext('Prepare seedlings') }}:
                         {% elif todo == 'Pr' %}
-                        Transplant/Sow to garden:
+                        {{ gettext('Transplant/Sow to garden') }}:
                         {% elif todo == 'R' %}
-                        Plant growth:
+                        {{ gettext('Plant growth') }}:
                         {% elif todo == 'P' %}
-                        Harvest:
+                        {{ gettext('Harvest') }}:
                         {% endif %}
                     </th>
                     <td>

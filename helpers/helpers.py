@@ -63,6 +63,10 @@ def prepare_plant_data(db, user_id):
         user_id,
     )
 
+    # Find the language setting for the particular user
+    settings = db.execute("SELECT language FROM settings WHERE user_id = ?", user_id)
+    language = settings[0]["language"]
+
     # Prepare the list to send to the client: in order to format the table, we want to
     # send dictionaries with two keys - name and todos, which is a dictionary of the
     # particular monthly todos.
@@ -70,7 +74,7 @@ def prepare_plant_data(db, user_id):
     for row in all_plants:
         plant = {}
         plant["id"] = row["id"]
-        plant["name"] = row["name"]
+        plant["name"] = row["name_" + language]
         todos = {k: row[k] for k in config.VALID_MONTH_NAMES}
         plant["todos"] = todos
         plants.append(plant)
@@ -145,7 +149,7 @@ def send_summary(db, mail, user_id):
 
     for task in weekly_todos:
         if weekly_todos[task]:
-            msg_body += f"<p><strong>{config.TASK_NAMES[task]}:</strong> "
+            msg_body += f"<p><strong>{config.TASK_NAMES[task][settings[0]['language']]}:</strong> "
             for plant in weekly_todos[task]:
                 msg_body += f"{plant}, "
             msg_body = msg_body[:-2] + "</p>"
