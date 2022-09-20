@@ -14,34 +14,12 @@ import helpers.helpers as h
 
 # Configure application
 app = Flask(__name__)
-
-# Ensure templates are auto-reloaded
-app.config["TEMPLATES_AUTO_RELOAD"] = True
-
-# Configure session to use filesystem (instead of signed cookies)
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
+app.config.from_object(config.Config())
 Session(app)
-
-# Configure the app to use the Heroku Postgres database.
-uri = os.getenv("DATABASE_URL")
-if uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://")
-db = SQL(uri)
-
-# Configure the app for sending mail using google mail.
+db = SQL(config.uri)
 mail = Mail(app)
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 465
-app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-app.config["MAIL_USE_TLS"] = False
-app.config["MAIL_USE_SSL"] = True
 mail.init_app(app)
-
-# Configure the app to use the scheduler and initialize it
 scheduler = APScheduler()
-scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
 

@@ -1,3 +1,5 @@
+import os
+
 # Hour in the day notifications are sent out
 MAIL_NOTIFICATIONS_HOUR = 20
 
@@ -16,3 +18,28 @@ TASK_NAMES = {
     "R": "Plant growth",
     "P": "Harvest",
 }
+
+# Configure the app to use the Heroku Postgres database.
+uri = os.getenv("DATABASE_URL")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://")
+
+
+class Config:
+    # Ensure templates are auto-reloaded
+    TEMPLATES_AUTO_RELOAD = True
+
+    # Configure session to use filesystem (instead of signed cookies)
+    SESSION_PERMANENT = False
+    SESSION_TYPE = "filesystem"
+
+    # Configure the app for sending mail using gmail.
+    MAIL_SERVER = "smtp.gmail.com"
+    MAIL_PORT = 465
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+
+    # Configure the app to use the APscheduler
+    SCHEDULER_API_ENABLED = True
