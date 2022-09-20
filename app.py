@@ -9,12 +9,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
 from flask_apscheduler import APScheduler
 
-from helpers.helpers import (
-    apology,
-    login_required,
-    prepare_plant_data,
-    prepare_weekly_todos,
-)
+import config
+import helpers.helpers as h
 
 # Configure application
 app = Flask(__name__)
@@ -48,21 +44,6 @@ scheduler = APScheduler()
 scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
-MAIL_NOTIFICATIONS_HOUR = 20
-
-VALID_MONTH_NAMES = []
-for i in range(1, 13):
-    for j in range(1, 4):
-        VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
-
-WEEK_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-TASK_NAMES = {
-    "S": "Sow for seedlings",
-    "Pi": "Prepare seedlings",
-    "Pr": "Transplant/Sow to garden",
-    "R": "Plant growth",
-    "P": "Harvest",
-}
 
 
 @scheduler.task(
@@ -70,59 +51,20 @@ TASK_NAMES = {
     id="mail_notifications",
     week="*",
     day_of_week="*",
-    hour=MAIL_NOTIFICATIONS_HOUR,
+    hour=config.MAIL_NOTIFICATIONS_HOUR,
 )
 def mail_notifications():
 
     with scheduler.app.app_context():
 
-        rows = db.execute("SELECT * FROM settings")
+        settings = db.execute("SELECT * FROM settings")
         today = date.today()
 
-        for user_settings in rows:
+        for user_settings in settings:
             if user_settings["notifications"]:
                 # Check if the user has a notification set for today.
-                if WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
-                    username = db.execute(
-                        "SELECT username FROM users WHERE id = ?",
-                        user_settings["user_id"],
-                    )[0]["username"]
-
-                    weekly_todos = prepare_weekly_todos(
-                        db, VALID_MONTH_NAMES, user_settings["user_id"]
-                    )
-
-                    msg_subject = "Plannter Task Summary for " + today.strftime(
-                        "%A, %b %-d"
-                    )
-
-                    msg_body = f"""
-                    <p>Hello, {username}!</p>
-                    <p>This is a summary of your weekly garden tasks:</p>
-                    """
-
-                    for task in weekly_todos:
-                        if weekly_todos[task]:
-                            msg_body += f"<p><strong>{TASK_NAMES[task]}:</strong> "
-                            for plant in weekly_todos[task]:
-                                msg_body += f"{plant}, "
-                            msg_body = msg_body[:-2] + "</p>"
-
-                    msg_body += """
-                    <p>&nbsp;</p>
-                    <p>--</p>
-                    <p>To configure your garden, visit the Plannter <a href="https://plannter-web.herokuapp.com/planner">Planning</a> page. To modify the notification settings, visit the Plannter <a href="https://plannter-web.herokuapp.com/settings">Settings</a>.</p>
-                    """
-
-                    recipients = user_settings["emails"].split(",")
-                    for recipient in recipients:
-                        msg = Message(
-                            msg_subject,
-                            recipients=[recipient],
-                            sender=("Plannter Notifications", "plannter.web@gmail.com"),
-                        )
-                        msg.html = msg_body
-                        mail.send(msg)
+                if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
+                    h.send_summary(db, mail, user_settings["user_id"])
 
 
 @app.after_request
@@ -135,13 +77,11 @@ def after_request(response):
 
 
 @app.route("/")
-@login_required
+@h.login_required
 def index():
     """Show the user-configured garden"""
 
-    plants, selected_plants = prepare_plant_data(
-        db, VALID_MONTH_NAMES, session["user_id"]
-    )
+    plants, selected_plants = h.prepare_plant_data(db, session["user_id"])
 
     # Keep only the selected plants in the data to be sent to the client.
     plants = [plant for plant in plants if plant["id"] in selected_plants]
@@ -150,7 +90,7 @@ def index():
 
 
 @app.route("/planner", methods=["GET", "POST"])
-@login_required
+@h.login_required
 def planner():
     """Plan the garden by selecting the plants to be grown."""
 
@@ -179,21 +119,25 @@ def planner():
 
     else:
 
-        plants, selected_plants = prepare_plant_data(
-            db, VALID_MONTH_NAMES, session["user_id"]
-        )
+        plants, selected_plants = h.prepare_plant_data(db, session["user_id"])
 
         return render_template(
             "planner.html", plants=plants, selected_plants=selected_plants
         )
 
 
-@app.route("/weekly")
-@login_required
+@app.route("/weekly", methods=["GET", "POST"])
+@h.login_required
 def weekly():
     """Show the user a weekly summary of work to do in the garden."""
 
-    weekly_todos = prepare_weekly_todos(db, VALID_MONTH_NAMES, session["user_id"])
+    if request.method == "POST":
+
+        h.send_summary(db, mail, session["user_id"])
+
+        flash("Summary sent to the e-mails, configured in your settings.")
+
+    weekly_todos = h.prepare_weekly_todos(db, session["user_id"])
 
     # TODO: Pass the weekly todos already with full strings (as per TASK_NAMES dict), in order to avoid hardcoding in html template.
     return render_template("weekly.html", weekly_todos=weekly_todos)
@@ -211,11 +155,11 @@ def login():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username", 403)
+            return h.apology("must provide username", 403)
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password", 403)
+            return h.apology("must provide password", 403)
 
         # Query database for username
         rows = db.execute(
@@ -226,7 +170,7 @@ def login():
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
-            return apology("invalid username and/or password", 403)
+            return h.apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -252,7 +196,7 @@ def logout():
 
 
 @app.route("/password_change", methods=["GET", "POST"])
-@login_required
+@h.login_required
 def password_change():
     """Allow the user to change their password"""
 
@@ -264,7 +208,7 @@ def password_change():
             or not request.form.get("password_new")
             or not request.form.get("password_confirm")
         ):
-            return apology("must provide password", 403)
+            return h.apology("must provide password", 403)
 
         # Ensure that the old password is correct.
         rows = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
@@ -273,11 +217,11 @@ def password_change():
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password_old")
         ):
-            return apology("old password is not correct", 403)
+            return h.apology("old password is not correct", 403)
 
         # Ensure the password and its confirmation matches
         elif request.form.get("password_new") != request.form.get("password_confirm"):
-            return apology("passwords do not match", 400)
+            return h.apology("passwords do not match", 400)
 
         # Store the username and hashed password in the database
         db.execute(
@@ -302,18 +246,18 @@ def register():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username", 400)
+            return h.apology("must provide username", 400)
 
         # Ensure e-mail was submitted
         if not request.form.get("e-mail"):
-            return apology("must provide e-mail", 400)
+            return h.apology("must provide e-mail", 400)
 
         # Ensure password was submitted
         elif not request.form.get("password") or not request.form.get("confirmation"):
-            return apology("must provide password", 400)
+            return h.apology("must provide password", 400)
 
         elif request.form.get("password") != request.form.get("confirmation"):
-            return apology("passwords do not match", 400)
+            return h.apology("passwords do not match", 400)
 
         # Store the username and hashed password in the database
         try:
@@ -326,7 +270,7 @@ def register():
             )
         # The username already exists in the database
         except ValueError:
-            return apology("username already taken", 400)
+            return h.apology("username already taken", 400)
 
         user_id = db.execute(
             "SELECT id\
@@ -349,14 +293,14 @@ def register():
 
 
 @app.route("/settings", methods=["GET", "POST"])
-@login_required
+@h.login_required
 def settings():
     """Allow the user to change the account settings."""
 
     if request.method == "POST":
 
         if not request.form.get("email_1"):
-            return apology("please provide a default e-mail", 400)
+            return h.apology("please provide a default e-mail", 400)
 
         # Get the notification days, selected by the user and format them into a comma separated
         # string, to be stored in the settings database.
@@ -408,7 +352,7 @@ def settings():
         except AttributeError:
             set_notifications = []
         notifications = {}
-        for day in WEEK_DAYS:
+        for day in config.WEEK_DAYS:
             if day in set_notifications:
                 notifications[day] = True
             else:

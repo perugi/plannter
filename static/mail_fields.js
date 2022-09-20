@@ -51,6 +51,7 @@ function addMailField(id) {
             input_group.appendChild(add_button);
         }
         container.appendChild(input_group);
+
     }
 }
 
