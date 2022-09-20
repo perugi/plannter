@@ -1,46 +1,57 @@
 function addMailField(id) {
-    // Remove the -/+ button from the previous input field.
-    document.getElementById("add_mail").remove();
-    // The first element does not have a - button.
-    if (id != 2) {
-        document.getElementById("remove_mail").remove();
-    }
-
-    // Get the container which houses the mail fields, in order to append a new input field.
-    var container = document.getElementById("mail_fields");
     
-    // Create the elements needed for a new mail field.
-    var input_group = document.createElement("div");
-    input_group.setAttribute("class", "input-group mb-3");
-    input_group.id = "mail_group_" + id;
+    const MAX_MAILS = 5
 
-    var input = document.createElement("input");
-    input.autocomplete = "off";
-    input.setAttribute("class", "form-control");
-    input.id = "mail_" + id;
-    input.name = "mail_" + id;
-    input.placeholder = "name@example.com";
-    input.type = "email";
+    id = Number(id)
 
-    var remove_button = document.createElement("button")
-    remove_button.setAttribute("class", "btn btn-outline-secondary");
-    remove_button.setAttribute("onclick", "removeMailField(" + id + ")");
-    remove_button.type = "button";
-    remove_button.id = "remove_mail";
-    remove_button.textContent = "-";
+    if (id < MAX_MAILS + 1) {
+        // Remove the -/+ button from the previous input field.
+        document.getElementById("add_email").remove();
+        // The first element does not have a - button.
+        if (id != 2) {
+            document.getElementById("remove_email").remove();
+        }
 
-    var add_button = document.createElement("button")
-    add_button.setAttribute("class", "btn btn-outline-secondary");
-    add_button.setAttribute("onclick", "addMailField(" + (id + 1) + ")");
-    add_button.type = "button";
-    add_button.id = "add_mail";
-    add_button.textContent = "+";
+        // Get the container which houses the mail fields, in order to append a new input field.
+        var container = document.getElementById("mail_fields");
+        
+        // Create the elements needed for a new mail field.
+        var input_group = document.createElement("div");
+        input_group.setAttribute("class", "input-group mb-3");
+        input_group.id = "mail_group_" + id;
 
-    // Generate a new input field.
-    input_group.appendChild(input);
-    input_group.appendChild(remove_button);
-    input_group.appendChild(add_button);
-    container.appendChild(input_group);
+        var input = document.createElement("input");
+        input.autocomplete = "off";
+        input.setAttribute("class", "form-control");
+        input.id = "email_" + id;
+        input.name = "email_" + id;
+        input.placeholder = "name@example.com";
+        input.type = "email";
+
+        var remove_button = document.createElement("button")
+        remove_button.setAttribute("class", "btn btn-outline-secondary");
+        remove_button.setAttribute("onclick", "removeMailField(" + id + ")");
+        remove_button.type = "button";
+        remove_button.id = "remove_email";
+        remove_button.textContent = "-";
+
+        if (id < MAX_MAILS) {
+            var add_button = document.createElement("button")
+            add_button.setAttribute("class", "btn btn-outline-secondary");
+            add_button.setAttribute("onclick", "addMailField(" + (id + 1) + ")");
+            add_button.type = "button";
+            add_button.id = "add_email";
+            add_button.textContent = "+";
+        }
+
+        // Generate a new input field.
+        input_group.appendChild(input);
+        input_group.appendChild(remove_button);
+        if (id < MAX_MAILS) {
+            input_group.appendChild(add_button);
+        }
+        container.appendChild(input_group);
+    }
 }
 
 function removeMailField(id) {
@@ -54,14 +65,14 @@ function removeMailField(id) {
     remove_button.setAttribute("class", "btn btn-outline-secondary");
     remove_button.setAttribute("onclick", "removeMailField(" + (id - 1) + ")");
     remove_button.type = "button";
-    remove_button.id = "remove_mail";
+    remove_button.id = "remove_email";
     remove_button.textContent = "-";
 
     var add_button = document.createElement("button")
     add_button.setAttribute("class", "btn btn-outline-secondary");
     add_button.setAttribute("onclick", "addMailField(" + id + ")");
     add_button.type = "button";
-    add_button.id = "add_mail";
+    add_button.id = "add_email";
     add_button.textContent = "+";
 
     // Append the -/+ buttons, except for the first field, where there is no - button.

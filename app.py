@@ -1,11 +1,12 @@
 import os
-import sys
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
+from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
+from flask_apscheduler import APScheduler
 
 from helpers.helpers import apology, login_required, prepare_plant_data
 
@@ -20,19 +21,34 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Configure the app to use the local sqlite database.
-# db = SQL("sqlite:///plannter.db")
-
 # Configure the app to use the Heroku Postgres database.
 uri = os.getenv("DATABASE_URL")
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://")
 db = SQL(uri)
 
+# Configure the app for sending mail using google mail.
+mail = Mail(app)
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
+mail.init_app(app)
+
+# Configure the app to use the scheduler and initialize it
+scheduler = APScheduler
+scheduler.api_enabled = True
+scheduler.init_app(app)
+scheduler.start()
+
 VALID_MONTH_NAMES = []
 for i in range(1, 13):
     for j in range(1, 4):
         VALID_MONTH_NAMES.append(f"todo_{i}_{j}")
+
+WEEK_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 
 @app.after_request
@@ -178,7 +194,7 @@ def logout():
 
 @app.route("/password_change", methods=["GET", "POST"])
 @login_required
-def password_register():
+def password_change():
     """Allow the user to change their password"""
 
     if request.method == "POST":
@@ -229,6 +245,10 @@ def register():
         if not request.form.get("username"):
             return apology("must provide username", 400)
 
+        # Ensure e-mail was submitted
+        if not request.form.get("e-mail"):
+            return apology("must provide e-mail", 400)
+
         # Ensure password was submitted
         elif not request.form.get("password") or not request.form.get("confirmation"):
             return apology("must provide password", 400)
@@ -239,9 +259,10 @@ def register():
         # Store the username and hashed password in the database
         try:
             db.execute(
-                "INSERT INTO users (username, hash)\
-                    VALUES (?, ?);",
+                "INSERT INTO users (username, mail, hash)\
+                    VALUES (?, ?, ?);",
                 request.form.get("username"),
+                request.form.get("e-mail"),
                 generate_password_hash(request.form.get("password")),
             )
         # The username already exists in the database
@@ -274,9 +295,32 @@ def settings():
     """Allow the user to change the account settings."""
 
     if request.method == "POST":
-        print(request.form, file=sys.stderr)
-        for key, value in request.form.items():
-            print(key, value, file=sys.stderr)
+
+        if not request.form.get("email_1"):
+            return apology("please provide a default e-mail", 400)
+
+        # Get the notification days, selected by the user and format them into a comma separated
+        # string, to be stored in the settings database.
+        notifications = ""
+        for key in request.form.keys():
+            if key[:6] != "notify":
+                continue
+            else:
+                notifications += key[7:] + ","
+        notifications = notifications[:-1]
+
+        db.execute(
+            "UPDATE settings\
+                SET notifications = ?, email_1 = ?, email_2 = ?, email_3 = ?, email_4 = ?, email_5 = ?\
+              WHERE user_id = ?",
+            notifications,
+            request.form.get("email_1"),
+            request.form.get("email_2"),
+            request.form.get("email_3"),
+            request.form.get("email_4"),
+            request.form.get("email_5"),
+            session["user_id"],
+        )
 
         # Notification for the user that the settings have been updated.
         flash("Settings successfully updated!")
@@ -285,4 +329,42 @@ def settings():
         return redirect("/")
 
     else:
-        return render_template("settings.html")
+
+        # Select all the user settings.
+        settings = db.execute(
+            "SELECT *\
+            FROM settings\
+            WHERE user_id = ?",
+            session["user_id"],
+        )
+
+        # Extract the emails into a dictionary.
+        emails = {}
+        for column in settings[0]:
+            if column[:5] == "email" and settings[0][column]:
+                emails[column] = settings[0][column]
+
+        # Generate a dictionary with a key for each day, True if notification is set, False if not.
+        set_notifications = settings[0]["notifications"].split(",")
+        notifications = {}
+        for day in WEEK_DAYS:
+            if day in set_notifications:
+                notifications[day] = True
+            else:
+                notifications[day] = False
+
+        # TODO remove this
+        msg = Message(
+            "Hello from the other side!",
+            recipients=["dominik.perusko@gmail.com"],
+            sender="plannter.web@gmail.com",
+        )
+        msg.body = "This is a test mail, sent from Flask."
+        mail.send(msg)
+
+        return render_template(
+            "settings.html",
+            no_emails=len(emails),
+            emails=emails,
+            notifications=notifications,
+        )

@@ -19,46 +19,60 @@ Settings
                             Mail notifications:
                         </th>
                         <td>
+
+                            {% for day in notifications %}
+
+                            {% if notifications[day] %}
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_mon" name="notify_mon">
-                                <label class="form-check-label" for="notify_mon">Mon</label>
+                                <input class="form-check-input" type="checkbox" id="{{ 'notify_' + day }}"
+                                    name="{{ 'notify_' + day }}" checked>
+                                <label class="form-check-label" for="{{ 'notify_' + day }}">{{ day | title }}</label>
                             </div>
+                            {% else %}
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_tue" name="notify_tue">
-                                <label class="form-check-label" for="notify_tue">Tue</label>
+                                <input class="form-check-input" type="checkbox" id="{{ 'notify_' + day }}"
+                                    name="{{ 'notify_' + day }}">
+                                <label class="form-check-label" for="{{ 'notify_' + day }}">{{ day | title }}</label>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_wed" name="notify_wed">
-                                <label class="form-check-label" for="notify_wed">Wed</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_thu" name="notify_thu">
-                                <label class="form-check-label" for="notify_thu">Thu</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_fri" name="notify_fri">
-                                <label class="form-check-label" for="notify_fri">Fri</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_sat" name="notify_sat">
-                                <label class="form-check-label" for="notify_sat">Sat</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="notify_sun" name="notify_sun">
-                                <label class="form-check-label" for="notify_sun">Sun</label>
-                            </div>
+                            {% endif %}
+
+                            {% endfor %}
                         </td>
                     </tr>
                     <tr>
                         <th>E-mail:</th>
                         <td>
                             <div id="mail_fields">
+                                {% if not emails %}
                                 <div id="mail_group_1" class="input-group mb-3">
-                                    <input autocomplete="off" autofocus class="form-control" id="mail_1" name="mail_1"
+                                    <input autocomplete="off" autofocus class="form-control" id="email_1" name="email_1"
                                         placeholder="name@example.com" type="email">
                                     <button class="btn btn-outline-secondary" onclick="addMailField(2)" type="button"
-                                        id="add_mail">+</button>
+                                        id="add_email">+</button>
                                 </div>
+                                {% else %}
+                                <!-- Generate the fields with the already input e-mails -->
+                                {% for i in range(1, no_emails) %}
+                                <div id="{{ 'mail_group_' ~ i }}" class="input-group mb-3">
+                                    <input autocomplete="off" autofocus class="form-control" id="{{ 'email_' ~ i }}"
+                                        name="{{ 'email_' ~ i }}" value="{{ emails['email_' ~ i] }}" type="email">
+                                </div>
+                                {% endfor %}
+                                <!-- The last e-mail needs the -/+ buttons -->
+                                <div id="{{ 'mail_group_' ~ no_emails }}" class="input-group mb-3">
+                                    <input autocomplete="off" autofocus class="form-control"
+                                        id="{{ 'email_' ~ no_emails }}" name="{{ 'email_' ~ no_emails }}"
+                                        value="{{ emails['email_' ~ no_emails] }}" type="email">
+                                    {% if no_emails != 1 %}
+                                    <button class="btn btn-outline-secondary"
+                                        onclick="removeMailField('{{ no_emails }}')" type="button"
+                                        id="remove_email">-</button>
+                                    {% endif %}
+                                    <button class="btn btn-outline-secondary"
+                                        onclick="addMailField('{{ no_emails + 1 }}')" type="button"
+                                        id="add_email">+</button>
+                                </div>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
