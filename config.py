@@ -12,11 +12,11 @@ for i in range(1, 13):
 WEEK_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 TASK_NAMES = {
-    "S": "Sow for seedlings",
-    "Pi": "Prepare seedlings",
-    "Pr": "Transplant/Sow to garden",
-    "R": "Plant growth",
-    "P": "Harvest",
+    "S": {"en": "Sow for seedlings", "si": "Setev za vzgojo sadik"},
+    "Pi": {"en": "Prepare seedlings", "si": "Pikiranje sadik"},
+    "Pr": {"en": "Transplant/Sow to garden", "si": "Presajanje ali setev na gredo"},
+    "R": {"en": "Plant growth", "si": "Rast"},
+    "P": {"en": "Harvest", "si": "Pridelek"},
 }
 
 # Configure the app to use the Heroku Postgres database.
