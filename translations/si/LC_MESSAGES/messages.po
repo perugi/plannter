@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-20 22:45+0200\n"
-"PO-Revision-Date: 2022-09-20 22:45+0200\n"
+"POT-Creation-Date: 2022-09-20 23:22+0200\n"
+"PO-Revision-Date: 2022-09-20 23:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: si\n"
 "Language-Team: si <LL@li.org>\n"
@@ -18,23 +18,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: templates/weekly.html:20
+#: templates/index.html:18 templates/planner.html:13
+msgid "No work"
+msgstr "Ni dela z rastlino"
+
+#: templates/index.html:21 templates/planner.html:16 templates/weekly.html:20
 msgid "Sow for seedlings"
 msgstr "Setev za vzgojo sadik"
 
-#: templates/weekly.html:22
+#: templates/index.html:24 templates/planner.html:19 templates/weekly.html:22
 msgid "Prepare seedlings"
 msgstr "Pikiranje sadik"
 
-#: templates/weekly.html:24
+#: templates/index.html:27 templates/planner.html:22 templates/weekly.html:24
 msgid "Transplant/Sow to garden"
 msgstr "Presajanje ali setev na gredo"
 
-#: templates/weekly.html:26
+#: templates/index.html:30 templates/planner.html:25 templates/weekly.html:26
 msgid "Plant growth"
 msgstr "Rast"
 
-#: templates/weekly.html:28
+#: templates/index.html:33 templates/planner.html:28 templates/weekly.html:28
 msgid "Harvest"
 msgstr "Pridelek"
+
+#: templates/index.html:42 templates/planner.html:39
+msgid "Plant"
+msgstr "Rastlina"
 
