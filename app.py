@@ -4,10 +4,11 @@ import sys
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from flask_mail import Mail, Message
+from flask_mail import Mail
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
 from flask_apscheduler import APScheduler
+from flask_babel import Babel, gettext
 
 import config
 import helpers.helpers as h
@@ -22,6 +23,7 @@ mail.init_app(app)
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
+babel = Babel(app)
 
 
 @scheduler.task(
@@ -43,6 +45,17 @@ def mail_notifications():
                 # Check if the user has a notification set for today.
                 if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
                     h.send_summary(db, mail, user_settings["user_id"])
+
+
+@babel.localeselector
+def get_locale():
+    if "user_id" not in session:
+        # If user is not logged in.
+        return "en"
+    else:
+        return db.execute(
+            "SELECT language FROM settings WHERE user_id = ?", session["user_id"]
+        )[0]["language"]
 
 
 @app.after_request
@@ -296,12 +309,15 @@ def settings():
                 emails += request.form.get(f"email_{i}") + ","
         emails = emails[:-1]
 
+        language = request.form.get("language")
+
         db.execute(
             "UPDATE settings\
-                SET notifications = ?, emails = ?\
+                SET notifications = ?, emails = ?, language = ?\
               WHERE user_id = ?",
             notifications,
             emails,
+            language,
             session["user_id"],
         )
 
@@ -336,9 +352,12 @@ def settings():
             else:
                 notifications[day] = False
 
+        language = settings[0]["language"]
+
         return render_template(
             "settings.html",
             no_emails=len(emails),
             emails=emails,
             notifications=notifications,
+            language=language,
         )

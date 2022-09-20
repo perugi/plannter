@@ -3,6 +3,7 @@ Flask
 Flask-Session
 Flask-Mail
 Flask-APScheduler
+Flask-Babel
 requests
 gunicorn
 psycopg2
