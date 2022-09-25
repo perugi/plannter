@@ -44,7 +44,7 @@ def mail_notifications():
             if user_settings["notifications"]:
                 # Check if the user has a notification set for today.
                 if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
-                    h.send_summary(db, mail, user_settings["user_id"])
+                    h.send_summary(app, db, mail, user_settings["user_id"])
 
 
 @babel.localeselector
@@ -124,7 +124,7 @@ def weekly():
 
     if request.method == "POST":
 
-        h.send_summary(db, mail, session["user_id"])
+        h.send_summary(app, db, mail, session["user_id"])
 
         flash("Summary sent to the e-mails, configured in your settings.")
 
@@ -227,6 +227,36 @@ def password_change():
 
     else:
         return render_template("password_change.html")
+
+
+@app.route("/password_reset", methods=["GET", "POST"])
+def password_reset():
+    """Allow the user to request a password reset"""
+
+    if request.method == "POST":
+        email = request.form.get("e-mail")
+
+        # Find the user id and username of the user with the specified e-mail.
+        stored_emails = db.execute("SELECT emails FROM settings")
+        for stored_email in stored_emails:
+            if email in stored_email["emails"]:
+                user_id = db.execute(
+                    "SELECT user_id FROM settings WHERE emails = ?",
+                    stored_email["emails"],
+                )[0]["user_id"]
+                user = db.execute("SELECT username FROM users WHERE id = ?", user_id)[
+                    0
+                ]["username"]
+                break
+
+        if user:
+            h.send_password_reset(app, mail, email, user)
+            flash(f"Password reset mail sent to {email}.")
+
+        return redirect("/login")
+
+    else:
+        return render_template("password_reset.html")
 
 
 @app.route("/register", methods=["GET", "POST"])

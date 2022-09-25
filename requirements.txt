@@ -7,3 +7,4 @@ Flask-Babel
 requests
 gunicorn
 psycopg2
+python-jwt

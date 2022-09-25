@@ -1,8 +1,12 @@
 import os
+import sys
 import requests
 import urllib.parse
 from datetime import date
+from threading import Thread
 from flask_mail import Mail, Message
+import python_jwt as jwt, jwcrypto.jwk as jwk
+import datetime, time
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -125,7 +129,7 @@ def prepare_weekly_todos(db, user_id):
     return weekly_todos
 
 
-def send_summary(db, mail, user_id):
+def send_summary(app, db, mail, user_id):
     """Get the data and send a weekly summary mail to the e-mails, as defined in the user settings,
     with the todos and plants, as configured by the user."""
     today = date.today()
@@ -167,4 +171,22 @@ def send_summary(db, mail, user_id):
             sender=("Plannter Notifications", "plannter.web@gmail.com"),
         )
         msg.html = msg_body
+        Thread(target=send_mail, args=(app, mail, msg)).start()
+
+
+def send_password_reset(app, mail, address, user):
+    print(f"Password reset: {user}, {address}", file=sys.stderr)
+
+    key = jwk.JWK.generate(kty="RSA", size=2048)
+
+    token = jwt.generate_jwt(
+        {"username": user}, key, "PS256", datetime.timedelta(minutes=5)
+    )
+
+    header, claims = jwt.verify_jwt(token, key, ["PS256"])
+    print(f"Received header: {header}\nReceived claims: :{claims}")
+
+
+def send_mail(app, mail, msg):
+    with app.app_context():
         mail.send(msg)
