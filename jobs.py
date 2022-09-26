@@ -13,6 +13,7 @@ scheduler = BlockingScheduler()
     "cron",
     day_of_week="*",
     hour=config.MAIL_NOTIFICATIONS_HOUR,
+    timezone="Europe/Ljubljana",
 )
 def mail_notifications():
 
