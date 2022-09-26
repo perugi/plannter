@@ -6,9 +6,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from flask_mail import Mail
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import date
-from flask_apscheduler import APScheduler
-from flask_babel import Babel, gettext
+from flask_babel import Babel
 
 import config
 import helpers.helpers as h
@@ -20,31 +18,7 @@ Session(app)
 db = SQL(config.uri)
 mail = Mail(app)
 mail.init_app(app)
-scheduler = APScheduler()
-scheduler.init_app(app)
-scheduler.start()
 babel = Babel(app)
-
-
-@scheduler.task(
-    "cron",
-    id="mail_notifications",
-    week="*",
-    day_of_week="*",
-    hour=config.MAIL_NOTIFICATIONS_HOUR,
-)
-def mail_notifications():
-
-    with scheduler.app.app_context():
-
-        settings = db.execute("SELECT * FROM settings")
-        today = date.today()
-
-        for user_settings in settings:
-            if user_settings["notifications"]:
-                # Check if the user has a notification set for today.
-                if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
-                    h.send_summary(db, mail, user_settings["user_id"])
 
 
 @babel.localeselector
