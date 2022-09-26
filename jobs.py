@@ -26,3 +26,6 @@ def mail_notifications():
                 # Check if the user has a notification set for today.
                 if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
                     h.send_summary(db, mail, user_settings["user_id"])
+
+
+scheduler.start()
