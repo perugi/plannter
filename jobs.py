@@ -17,16 +17,14 @@ scheduler = BlockingScheduler()
 )
 def mail_notifications():
 
-    with scheduler.app.app_context():
+    settings = db.execute("SELECT * FROM settings")
+    today = date.today()
 
-        settings = db.execute("SELECT * FROM settings")
-        today = date.today()
-
-        for user_settings in settings:
-            if user_settings["notifications"]:
-                # Check if the user has a notification set for today.
-                if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
-                    h.send_summary(db, mail, user_settings["user_id"])
+    for user_settings in settings:
+        if user_settings["notifications"]:
+            # Check if the user has a notification set for today.
+            if config.WEEK_DAYS[today.weekday()] in user_settings["notifications"]:
+                h.send_summary(db, mail, user_settings["user_id"])
 
 
 scheduler.start()
