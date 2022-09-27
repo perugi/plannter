@@ -227,10 +227,9 @@ def register():
         # Store the username and hashed password in the database
         try:
             db.execute(
-                "INSERT INTO users (username, mail, hash)\
-                    VALUES (?, ?, ?);",
+                "INSERT INTO users (username, hash)\
+                    VALUES (?, ?);",
                 request.form.get("username"),
-                request.form.get("e-mail"),
                 generate_password_hash(request.form.get("password")),
             )
         # The username already exists in the database
@@ -242,6 +241,14 @@ def register():
                FROM users\
               WHERE username=?",
             request.form.get("username"),
+        )
+
+        # Create an entry for the user in the settings database
+        db.execute(
+            "INSERT INTO settings (user_id, emails, notifications, language)\
+             VALUES (?, ?, NULL, 'en');",
+            user_id[0]["id"],
+            request.form.get("e-mail"),
         )
 
         # Create an entry for the user in the selected_plants database
