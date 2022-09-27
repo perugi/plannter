@@ -8,6 +8,9 @@ This web application was created as the final project of the CS50x course. The d
 
 The application allows the user to configure a garden by selecting a number of plants to be grown in a growing season.
 
+### Video Demo
+<TODO>
+
 ### User Registration and Login
 Create an account by clicking on the register button and selecting a username, providing an e-mail and inputting and confirming a password. After a successful login, the user is presented by an empty home screen. In order to see the activities on the selected plants, they must be selected on the Planner page.
 The user password can be changed once the user is logged in by selecting the option from the dropdown menu on the username.
