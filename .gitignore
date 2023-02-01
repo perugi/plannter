@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # Project specific
-plannter.db
-flask_session/
-helpers/env.sh
+flask_archive/plannter.db
+flask_archive/flask_session/
+env.sh
