@@ -10,6 +10,9 @@ from .models import User
 
 @login_required
 def index(request):
+    """Show the user-configured garden."""
+
+    plants, selected_plants = h.prepare_
     # return HttpResponseRedirect(reverse("posts", kwargs={"page": 1}))
     return HttpResponseRedirect("Home page")
 
