@@ -15,12 +15,10 @@ class Setting(models.Model):
 
 
 class Plant(models.Model):
-    # user_id, id, name_si, name_en, todos
     creator = models.ForeignKey("User", on_delete=models.CASCADE)
     name_en = models.CharField(max_length=64)
     name_si = models.CharField(max_length=64)
     todos = models.CharField
-    time_modified = models.DateTimeField(auto_now_add=True)
 
 
 class SelectedPlant(models.Model):
