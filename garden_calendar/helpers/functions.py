@@ -1,15 +1,13 @@
-import os
+import os, sys
 
-# import requests
 import urllib.parse
 from datetime import date
 
-# from flask_mail import Mail, Message
 
 # from flask import redirect, render_template, request, session
 from functools import wraps
 
-from constants import *
+from .constants import *
 
 
 # def apology(message, code=400):
@@ -37,48 +35,32 @@ from constants import *
 #     return render_template("apology.html", top=code, bottom=escape(message)), code
 
 
-def prepare_plant_data(db, user_id):
-    """Query the databases to prepare the plant data for display in tables."""
-
-    # Select all the default (user_id 1, created by admin) and user custom plants.
-    all_plants = db.execute(
-        "SELECT *\
-           FROM plants\
-          WHERE user_id = 1\
-             OR user_id = ?",
-        user_id,
-    )
-
-    # Find the language setting for the particular user
-    settings = db.execute("SELECT language FROM settings WHERE user_id = ?", user_id)
-    language = settings[0]["language"]
+def prepare_plant_data(plants, language):
+    """Prepare the plant data by generating a list of dictionaries to be passed to
+    the template. This means selecting the correct name of the plant to be displayed
+    (based on the user settings) and separating the todos from a comma-separated string
+    to a dict."""
 
     # Prepare the list to send to the client: in order to format the table, we want to
     # send dictionaries with two keys - name and todos, which is a dictionary of the
     # particular monthly todos.
-    plants = []
-    for row in all_plants:
+    plants_formatted = []
+    for row in plants:
         plant = {}
-        plant["id"] = row["id"]
-        plant["name"] = row["name_" + language]
-        todos = {k: row[k] for k in VALID_MONTH_NAMES}
-        plant["todos"] = todos
-        plants.append(plant)
+        plant["id"] = row.id
+        if language == "en":
+            plant["name"] = row.name_en
+        elif language == "si":
+            plant["name"] = row.name_si
+        else:
+            raise Exception("User langage not suppored")
+        plant["todos"] = {
+            month: todo
+            for (todo, month) in zip(row.todos.split(","), VALID_MONTH_NAMES)
+        }
+        plants_formatted.append(plant)
 
-    selected_plants = db.execute(
-        "SELECT selected_plants\
-            FROM selected_plants\
-            WHERE user_id = ?",
-        user_id,
-    )
-
-    # The selected plants are stored in as a comma separated string, decode into a list.
-    if selected_plants[0]["selected_plants"]:
-        selected_plants = [
-            int(id) for id in selected_plants[0]["selected_plants"].split(",")
-        ]
-
-    return plants, selected_plants
+    return plants_formatted
 
 
 # def prepare_weekly_todos(db, user_id):

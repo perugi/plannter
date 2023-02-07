@@ -1,20 +1,28 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
 
-from .models import User
+from .models import User, Plant, SelectedPlant, Setting
+
+from .helpers.functions import prepare_plant_data
 
 
 @login_required
 def index(request):
     """Show the user-configured garden."""
 
-    # plants, selected_plants = h.prepare_
-    # return HttpResponseRedirect(reverse("posts", kwargs={"page": 1}))
-    return HttpResponseRedirect("Home page")
+    try:
+        plants = SelectedPlant.objects.get(user=request.user).selected_plants.all()
+        plants = prepare_plant_data(plants, "si")
+    except ObjectDoesNotExist:
+        # User has not selected any plants yet.
+        plants = []
+
+    return render(request, "garden_calendar/index.html", {"plants": plants})
 
 
 def login_view(request):
