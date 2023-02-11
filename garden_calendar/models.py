@@ -5,7 +5,7 @@ from .helpers.constants import LANGUAGES
 
 
 class User(AbstractUser):
-    pass
+    selected_plants = models.ManyToManyField("Plant")
 
 
 class Setting(models.Model):
@@ -22,8 +22,3 @@ class Plant(models.Model):
 
     def __str__(self):
         return f"{self.name_si}: [{self.creator}]"
-
-
-class SelectedPlant(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
-    selected_plants = models.ManyToManyField("Plant")
