@@ -103,8 +103,10 @@ def planner(request):
                 # If we fail the conversion to int, we're looking at the csrf token.
                 pass
             except ObjectDoesNotExist:
-                messages.error(request, f"Plant id {id} not found.")
+                messages.warning(request, f"Plant id {id} not found.")
                 continue
+
+        messages.success(request, "Garden successfully updated!")
 
         return HttpResponseRedirect(reverse("index"))
 

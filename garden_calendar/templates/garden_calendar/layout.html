@@ -77,15 +77,17 @@
         {% for message in messages %}
         {% if message.tags == "error" %}
         <div class="alert alert-danger alert-dismissible mb-0 text-center" role="alert">
-            {% elif message.tags == "success" %}
-            <div class="alert alert-success alert-dismissible mb-0 text-center" role="alert">
-                {% else %}
-                <div class="alert alert-primary alert-dismissible mb-0 text-center" role="alert">
-                    {% endif %}
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                </div>
-                {% endfor %}
+            {% elif message.tags == "warning" %}
+            <div class="alert alert-warning alert-dismissible mb-0 text-center" role="alert">
+                {% elif message.tags == "success" %}
+                <div class="alert alert-success alert-dismissible mb-0 text-center" role="alert">
+                    {% else %}
+                    <div class="alert alert-primary alert-dismissible mb-0 text-center" role="alert">
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                    </div>
+                    {% endfor %}
     </header>
     {% endif %}
 
