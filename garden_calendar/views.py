@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import translation
+from django.conf import settings
 
 from .models import User, Plant, Setting
 
