@@ -87,6 +87,52 @@ def register(request):
 
 
 @login_required
+def password_change(request):
+    """Allow the user to change their password"""
+
+    if request.method == "POST":
+        password_old = request.POST["password_old"]
+        password_new = request.POST["password_new"]
+        password_confirm = request.POST["password_confirm"]
+
+        # Ensure all the passwords were submitted
+        if not password_old or not password_new or not password_confirm:
+            messages.error(request, "Please fill out all the password fields.")
+            return render(request, "garden_calendar/password_change.html")
+
+        # Get the u/p and attempt to sign the user in
+        username = request.user.username
+        user = authenticate(request, username=username, password=password_old)
+
+        # Check if authentication successful
+        if user is None:
+            messages.error(request, "Old password is invalid.")
+            return render(
+                request,
+                "garden_calendar/password_change.html",
+            )
+
+        # Ensure the password and its confirmation matches
+        elif password_new != password_confirm:
+            messages.error(request, "New password and confirmation do not match.")
+            return render(
+                request,
+                "garden_calendar/password_change.html",
+            )
+
+        # set_password also hashes the password that the user will get
+        user.set_password(password_new)
+        user.save()
+        login(request, user)
+
+        messages.success(request, "Password successfully updated.")
+        return HttpResponseRedirect(reverse("index"))
+
+    else:
+        return render(request, "garden_calendar/password_change.html")
+
+
+@login_required
 def planner(request):
     """Plan the garden by selecting the plants to be grown."""
 
