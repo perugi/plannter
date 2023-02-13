@@ -6,12 +6,7 @@ from .helpers.constants import LANGUAGES
 
 class User(AbstractUser):
     selected_plants = models.ManyToManyField("Plant")
-
-
-class Setting(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
     language = models.CharField(max_length=2, choices=LANGUAGES, default="en")
-    pass
 
 
 class Plant(models.Model):

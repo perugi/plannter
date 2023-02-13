@@ -20,7 +20,7 @@ TASK_NAMES = {
 
 LANGUAGES = [
     ("en", "English"),
-    ("si", "Slovenščina"),
+    ("si", "Slovenian"),
 ]
 
 # # Configure the app to use the Heroku Postgres database.
