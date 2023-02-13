@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import translation
 from django.conf import settings
 
-from .models import User, Plant, Setting
+from .models import User, Plant
 
 from .helpers.functions import prepare_plant_data
 
@@ -25,6 +25,8 @@ def index(request):
     except ObjectDoesNotExist:
         # User has not selected any plants yet.
         plants = []
+
+    translation.activate(request.user.language)
 
     return render(request, "garden_calendar/index.html", {"plants": plants})
 
