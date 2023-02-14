@@ -1,17 +1,18 @@
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+from django.forms import ModelForm
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.db import IntegrityError
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils import translation
-from django.conf import settings
 
-from .models import User, Plant
-
+from .helpers.constants import WEEK_DAYS
 from .helpers.functions import prepare_plant_data
+from .models import Plant, User
 
 
 @login_required
@@ -20,8 +21,7 @@ def index(request):
 
     try:
         plants = request.user.selected_plants.all()
-        # TODO for internationalization, select the language, based on the user settings.
-        plants = prepare_plant_data(plants, "si")
+        plants = prepare_plant_data(plants, request.user.language)
     except ObjectDoesNotExist:
         # User has not selected any plants yet.
         plants = []
@@ -161,8 +161,7 @@ def planner(request):
 
     else:
         plants = Plant.objects.all().filter(creator_id__in=[1, request.user.id])
-        # TODO for internationalization, select the language, based on the user settings.
-        plants = prepare_plant_data(plants, "si")
+        plants = prepare_plant_data(plants, request.user.language)
 
         try:
             selected_plants = request.user.selected_plants.all()
@@ -178,47 +177,55 @@ def planner(request):
         )
 
 
+class SettingsForm(ModelForm):
+    class Meta:
+        pass
+
+
 @login_required
 def settings(request):
     """Allow the user to change the account settings."""
 
-    # if request.method == "POST":
-    #     if not request.form.get("email_1"):
-    #         return h.apology("please provide a default e-mail", 400)
+    if request.method == "POST":
+        #     if not request.form.get("email_1"):
+        #         return h.apology("please provide a default e-mail", 400)
 
-    #     # Get the notification days, selected by the user and format them into a comma separated
-    #     # string, to be stored in the settings database.
-    #     notifications = ""
-    #     for key in request.form.keys():
-    #         if key[:6] != "notify":
-    #             continue
-    #         else:
-    #             notifications += key[7:] + ","
-    #     notifications = notifications[:-1]
+        #     # Get the notification days, selected by the user and format them into a comma separated
+        #     # string, to be stored in the settings database.
+        #     notifications = ""
+        #     for key in request.form.keys():
+        #         if key[:6] != "notify":
+        #             continue
+        #         else:
+        #             notifications += key[7:] + ","
+        #     notifications = notifications[:-1]
 
-    #     emails = ""
-    #     for i in range(1, 6):
-    #         if request.form.get(f"email_{i}"):
-    #             emails += request.form.get(f"email_{i}") + ","
-    #     emails = emails[:-1]
+        #     emails = ""
+        #     for i in range(1, 6):
+        #         if request.form.get(f"email_{i}"):
+        #             emails += request.form.get(f"email_{i}") + ","
+        #     emails = emails[:-1]
 
-    #     language = request.form.get("language")
+        language = request.POST["language"]
 
-    #     db.execute(
-    #         "UPDATE settings\
-    #             SET notifications = ?, emails = ?, language = ?\
-    #           WHERE user_id = ?",
-    #         notifications,
-    #         emails,
-    #         language,
-    #         session["user_id"],
-    #     )
+        request.user.language = language
+        request.user.save()
 
-    #     # Notification for the user that the settings have been updated.
-    #     flash("Settings successfully updated!")
+        # db.execute(
+        #     "UPDATE settings\
+        #         SET notifications = ?, emails = ?, language = ?\
+        #       WHERE user_id = ?",
+        #     notifications,
+        #     emails,
+        #     language,
+        #     session["user_id"],
+        # )
 
-    #     # Redirect user to home page
-    #     return redirect("/")
+        # Notification for the user that the settings have been updated.
+        messages.success(request, f"Settings successfully updated!")
+
+        # Redirect user to home page
+        return HttpResponseRedirect(reverse("index"))
 
     # else:
     print(request.user.language)
@@ -245,15 +252,23 @@ def settings(request):
     #         notifications[day] = True
     #     else:
     #         notifications[day] = False
+    notifications = {}
+    for day in WEEK_DAYS:
+        notifications[day] = False
 
     # language = settings[0]["language"]
 
-    # return render_template(
-    #     "settings.html",
-    #     no_emails=len(emails),
-    #     emails=emails,
-    #     notifications=notifications,
-    #     language=language,
-    # )
-
-    return HttpResponseRedirect(reverse("index"))
+    return render(
+        request,
+        "garden_calendar/settings.html",
+        {
+            "no_emails": 0,
+            "emails": [],
+            "notifications": notifications,
+            "language": request.user.language,
+        }
+        # no_emails=len(emails),
+        # emails=emails,
+        # notifications=notifications,
+        # language=language,
+    )

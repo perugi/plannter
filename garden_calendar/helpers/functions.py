@@ -53,7 +53,7 @@ def prepare_plant_data(plants, language):
         elif language == "si":
             plant["name"] = row.name_si
         else:
-            raise Exception("User langage not suppored")
+            raise Exception("User language not suppored")
         plant["todos"] = {
             month: todo
             for (todo, month) in zip(row.todos.split(","), VALID_MONTH_NAMES)
