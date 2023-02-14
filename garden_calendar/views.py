@@ -179,7 +179,9 @@ def planner(request):
 
 class SettingsForm(ModelForm):
     class Meta:
-        pass
+        model = User
+        fields = ["language"]
+        language = {"language": ""}
 
 
 @login_required
@@ -206,10 +208,16 @@ def settings(request):
         #             emails += request.form.get(f"email_{i}") + ","
         #     emails = emails[:-1]
 
-        language = request.POST["language"]
-
-        request.user.language = language
-        request.user.save()
+        form = SettingsForm(request.POST)
+        if form.is_valid():
+            new_settings = form.save(commit=False)
+            request.user.language = new_settings.language
+            request.user.save()
+            # Notification for the user that the settings have been updated.
+            messages.success(request, f"Settings successfully updated!")
+        else:
+            # Notification for the user that the settings have been updated.
+            messages.error(request, f"Invalid settings sent!")
 
         # db.execute(
         #     "UPDATE settings\
@@ -220,9 +228,6 @@ def settings(request):
         #     language,
         #     session["user_id"],
         # )
-
-        # Notification for the user that the settings have been updated.
-        messages.success(request, f"Settings successfully updated!")
 
         # Redirect user to home page
         return HttpResponseRedirect(reverse("index"))
