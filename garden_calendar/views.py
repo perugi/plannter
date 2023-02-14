@@ -12,7 +12,7 @@ from django.utils import translation
 
 from .helpers.constants import WEEK_DAYS
 from .helpers.functions import prepare_plant_data
-from .models import Plant, User
+from .models import Plant, User, AddEMail
 
 
 @login_required
@@ -210,14 +210,33 @@ def settings(request):
 
         form = SettingsForm(request.POST)
         if form.is_valid():
-            new_settings = form.save(commit=False)
-            request.user.language = new_settings.language
+            request.user.language = request.POST["language"]
+
+            # Process the default e-mail (store in User).
+            if not request.POST.get("email_1"):
+                messages.error(request, f"Please provide a default e-mail")
+                return HttpResponseRedirect(reverse("settings"))
+
+            request.user.email = request.POST.get("email_1")
+
+            # Process any additional emails (store in AddEMail)
+            AddEMail.objects.filter(user=request.user).delete()
+
+            for i in range(2, 6):
+                if request.POST.get(f"email_{i}"):
+                    email = AddEMail(
+                        user=request.user, email=request.POST.get(f"email_{i}")
+                    )
+                    email.save()
+
             request.user.save()
+
             # Notification for the user that the settings have been updated.
             messages.success(request, f"Settings successfully updated!")
+            return HttpResponseRedirect(reverse("index"))
         else:
-            # Notification for the user that the settings have been updated.
             messages.error(request, f"Invalid settings sent!")
+            return HttpResponseRedirect(reverse("settings"))
 
         # db.execute(
         #     "UPDATE settings\
@@ -229,11 +248,7 @@ def settings(request):
         #     session["user_id"],
         # )
 
-        # Redirect user to home page
-        return HttpResponseRedirect(reverse("index"))
-
     # else:
-    print(request.user.language)
     # # Select all the user settings.
 
     # settings = db.execute(
@@ -242,9 +257,6 @@ def settings(request):
     #     WHERE user_id = ?",
     #     session["user_id"],
     # )
-
-    # # Extract the emails into a list.
-    # emails = settings[0]["emails"].split(",")
 
     # # Generate a dictionary with a key for each day, True if notification is set, False if not.
     # try:
@@ -257,20 +269,25 @@ def settings(request):
     #         notifications[day] = True
     #     else:
     #         notifications[day] = False
+
+    # The default mail is saved in the User model, additional in the AddEMail.
+    emails = [request.user.email]
+    emails += [object.email for object in AddEMail.objects.filter(user=request.user)]
+
     notifications = {}
     for day in WEEK_DAYS:
         notifications[day] = False
 
-    # language = settings[0]["language"]
+    language = request.user.language
 
     return render(
         request,
         "garden_calendar/settings.html",
         {
-            "no_emails": 0,
-            "emails": [],
+            "no_emails": len(emails),
+            "emails": emails,
             "notifications": notifications,
-            "language": request.user.language,
+            "language": language,
         }
         # no_emails=len(emails),
         # emails=emails,

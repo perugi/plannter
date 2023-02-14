@@ -1,7 +1,8 @@
 {% extends "garden_calendar/layout.html" %}
+{% load static %}
 
 {% block script %}
-<script src="/static/mail_fields.js"></script>
+<script src="{% static 'garden_calendar/mail_fields.js' %}"></script>
 {% endblock %}
 
 {% block title %}
@@ -52,27 +53,24 @@ Settings
                                         id="add_email">+</button>
                                 </div>
                                 {% else %}
-                                <!-- Generate the fields with the already input e-mails -->
-                                {% for email in emails %}
-                                <div id="{{ 'mail_group_' | add:forloop.counter }}" class="input-group mb-3">
-                                    <input autocomplete="off" class="form-control"
-                                        id="{{ 'email_' | add:forloop.counter }}"
-                                        name="{{ 'email_' | add:forloop.counter }}" value="{{ email }}" type="email">
+                                <!-- Generate the fields with the already input e-mails (slice out the last one) -->
+                                {% for email in emails|slice:"0:-1" %}
+                                <div id="mail_group_{{ forloop.counter }}" class="input-group mb-3">
+                                    <input autocomplete="off" class="form-control" id="email_{{ forloop.counter }}"
+                                        name="email_{{ forloop.counter }}" value="{{ email }}" type="email">
                                 </div>
                                 {% endfor %}
                                 <!-- The last e-mail needs the -/+ buttons -->
-                                <div id="{{ 'mail_group_' | add:emails|length }}" class="input-group mb-3">
-                                    <input autocomplete="off" class="form-control"
-                                        id="{{ 'email_' | add:emails|length }}"
-                                        name="{{ 'email_' | add:emails|length }}" value="{{ emails.emails|length }}"
-                                        type="email">
+                                <div id="mail_group_{{ emails|length }}" class="input-group mb-3">
+                                    <input autocomplete="off" class="form-control" id="email_{{ emails|length }}"
+                                        name="email_{{ emails|length }}" value="{{ emails|last }}" type="email">
                                     {% if no_emails != 1 %}
                                     <button class="btn btn-outline-secondary"
                                         onclick="removeMailField('{{ emails|length }}')" type="button"
                                         id="remove_email">-</button>
                                     {% endif %}
                                     <button class="btn btn-outline-secondary"
-                                        onclick="addMailField('{{ emails|length | add:1 }}')" type="button"
+                                        onclick="addMailField('{{ emails|length|add:1 }}')" type="button"
                                         id="add_email">+</button>
                                 </div>
                                 {% endif %}
