@@ -117,7 +117,7 @@ LANGUAGES = [
     ("en", _("English")),
 ]
 
-LANGUAGE_CODE = "si"
+LANGUAGE_CODE = "en"
 
 TIME_ZONE = "UTC"
 

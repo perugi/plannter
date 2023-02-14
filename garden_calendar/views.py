@@ -177,3 +177,84 @@ def planner(request):
             "garden_calendar/planner.html",
             {"plants": plants, "selected_plants": selected_plants},
         )
+
+
+@login_required
+def settings(request):
+    """Allow the user to change the account settings."""
+
+    # if request.method == "POST":
+    #     if not request.form.get("email_1"):
+    #         return h.apology("please provide a default e-mail", 400)
+
+    #     # Get the notification days, selected by the user and format them into a comma separated
+    #     # string, to be stored in the settings database.
+    #     notifications = ""
+    #     for key in request.form.keys():
+    #         if key[:6] != "notify":
+    #             continue
+    #         else:
+    #             notifications += key[7:] + ","
+    #     notifications = notifications[:-1]
+
+    #     emails = ""
+    #     for i in range(1, 6):
+    #         if request.form.get(f"email_{i}"):
+    #             emails += request.form.get(f"email_{i}") + ","
+    #     emails = emails[:-1]
+
+    #     language = request.form.get("language")
+
+    #     db.execute(
+    #         "UPDATE settings\
+    #             SET notifications = ?, emails = ?, language = ?\
+    #           WHERE user_id = ?",
+    #         notifications,
+    #         emails,
+    #         language,
+    #         session["user_id"],
+    #     )
+
+    #     # Notification for the user that the settings have been updated.
+    #     flash("Settings successfully updated!")
+
+    #     # Redirect user to home page
+    #     return redirect("/")
+
+    # else:
+    print(request.user.language)
+    # # Select all the user settings.
+
+    # settings = db.execute(
+    #     "SELECT *\
+    #     FROM settings\
+    #     WHERE user_id = ?",
+    #     session["user_id"],
+    # )
+
+    # # Extract the emails into a list.
+    # emails = settings[0]["emails"].split(",")
+
+    # # Generate a dictionary with a key for each day, True if notification is set, False if not.
+    # try:
+    #     set_notifications = settings[0]["notifications"].split(",")
+    # except AttributeError:
+    #     set_notifications = []
+    # notifications = {}
+    # for day in config.WEEK_DAYS:
+    #     if day in set_notifications:
+    #         notifications[day] = True
+    #     else:
+    #         notifications[day] = False
+
+    # language = settings[0]["language"]
+
+    # return render_template(
+    #     "settings.html",
+    #     no_emails=len(emails),
+    #     emails=emails,
+    #     notifications=notifications,
+    #     language=language,
+    # )
+
+    return HttpResponseRedirect(reverse("index"))
