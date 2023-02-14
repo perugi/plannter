@@ -189,25 +189,6 @@ def settings(request):
     """Allow the user to change the account settings."""
 
     if request.method == "POST":
-        #     if not request.form.get("email_1"):
-        #         return h.apology("please provide a default e-mail", 400)
-
-        #     # Get the notification days, selected by the user and format them into a comma separated
-        #     # string, to be stored in the settings database.
-        #     notifications = ""
-        #     for key in request.form.keys():
-        #         if key[:6] != "notify":
-        #             continue
-        #         else:
-        #             notifications += key[7:] + ","
-        #     notifications = notifications[:-1]
-
-        #     emails = ""
-        #     for i in range(1, 6):
-        #         if request.form.get(f"email_{i}"):
-        #             emails += request.form.get(f"email_{i}") + ","
-        #     emails = emails[:-1]
-
         form = SettingsForm(request.POST)
         if form.is_valid():
             request.user.language = request.POST["language"]
@@ -229,6 +210,16 @@ def settings(request):
                     )
                     email.save()
 
+            # Get the notification days, selected by the user and format them into a comma separated
+            # string, to be stored in the user database.
+            notifications = ""
+            for key in request.POST.keys():
+                if key[:6] != "notify":
+                    continue
+                else:
+                    notifications += key[7:] + ","
+            request.user.notifications = notifications[:-1]
+
             request.user.save()
 
             # Notification for the user that the settings have been updated.
@@ -238,38 +229,6 @@ def settings(request):
             messages.error(request, f"Invalid settings sent!")
             return HttpResponseRedirect(reverse("settings"))
 
-        # db.execute(
-        #     "UPDATE settings\
-        #         SET notifications = ?, emails = ?, language = ?\
-        #       WHERE user_id = ?",
-        #     notifications,
-        #     emails,
-        #     language,
-        #     session["user_id"],
-        # )
-
-    # else:
-    # # Select all the user settings.
-
-    # settings = db.execute(
-    #     "SELECT *\
-    #     FROM settings\
-    #     WHERE user_id = ?",
-    #     session["user_id"],
-    # )
-
-    # # Generate a dictionary with a key for each day, True if notification is set, False if not.
-    # try:
-    #     set_notifications = settings[0]["notifications"].split(",")
-    # except AttributeError:
-    #     set_notifications = []
-    # notifications = {}
-    # for day in config.WEEK_DAYS:
-    #     if day in set_notifications:
-    #         notifications[day] = True
-    #     else:
-    #         notifications[day] = False
-
     # The default mail is saved in the User model, additional in the AddEMail.
     emails = [request.user.email]
     emails += [object.email for object in AddEMail.objects.filter(user=request.user)]
@@ -277,6 +236,18 @@ def settings(request):
     notifications = {}
     for day in WEEK_DAYS:
         notifications[day] = False
+
+    # Generate a dictionary with a key for each day, True if notification is set, False if not.
+    try:
+        set_notifications = request.user.notifications.split(",")
+    except AttributeError:
+        set_notifications = []
+    notifications = {}
+    for day in WEEK_DAYS:
+        if day in set_notifications:
+            notifications[day] = True
+        else:
+            notifications[day] = False
 
     language = request.user.language
 
@@ -288,9 +259,5 @@ def settings(request):
             "emails": emails,
             "notifications": notifications,
             "language": language,
-        }
-        # no_emails=len(emails),
-        # emails=emails,
-        # notifications=notifications,
-        # language=language,
+        },
     )
