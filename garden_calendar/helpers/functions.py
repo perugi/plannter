@@ -10,31 +10,6 @@ from functools import wraps
 from .constants import *
 
 
-# def apology(message, code=400):
-#     """Render message as an apology to user."""
-
-#     def escape(s):
-#         """
-#         Escape special characters.
-
-#         https://github.com/jacebrowning/memegen#special-characters
-#         """
-#         for old, new in [
-#             ("-", "--"),
-#             (" ", "-"),
-#             ("_", "__"),
-#             ("?", "~q"),
-#             ("%", "~p"),
-#             ("#", "~h"),
-#             ("/", "~s"),
-#             ('"', "''"),
-#         ]:
-#             s = s.replace(old, new)
-#         return s
-
-#     return render_template("apology.html", top=code, bottom=escape(message)), code
-
-
 def prepare_plant_data(plants, language):
     """Prepare the plant data by generating a list of dictionaries to be passed to
     the template. This means selecting the correct name of the plant to be displayed
@@ -63,34 +38,29 @@ def prepare_plant_data(plants, language):
     return plants_formatted
 
 
-# def prepare_weekly_todos(db, user_id):
-#     """Prepare a dictionary with the todos for the week. The keys of the dict represent
-#     the activity, while the values are the list of plants for that activity."""
+def prepare_weekly_todos(plants):
+    """Prepare a dictionary with the todos for the week. The keys of the dict represent
+    the activity, while the values are the list of plants for that activity."""
 
-#     plants, selected_plants = prepare_plant_data(db, user_id)
+    today = date.today()
+    # Find the part of the month we are in.
+    if today.day <= 10:
+        month_period = 1
+    elif today.day <= 20:
+        month_period = 2
+    else:
+        month_period = 3
 
-#     # Keep only the selected plants in the data to be sent to the client.
-#     plants = [plant for plant in plants if plant["id"] in selected_plants]
+    weekly_todos = {key: [] for key in TASK_NAMES.keys()}
 
-#     today = date.today()
-#     # Find the part of the month we are in.
-#     if today.day <= 10:
-#         month_period = 1
-#     elif today.day <= 20:
-#         month_period = 2
-#     else:
-#         month_period = 3
+    # Filter out the correct todo, based on the part of the month we are in.
+    for plant in plants:
+        if not plant["todos"][f"todo_{today.month}_{month_period}"] == "N":
+            weekly_todos[plant["todos"][f"todo_{today.month}_{month_period}"]].append(
+                plant["name"]
+            )
 
-#     # TODO: Use the dict, defined in the constants to generate the values in this empty dict.
-#     weekly_todos = {"S": [], "Pi": [], "Pr": [], "R": [], "P": []}
-#     # Filter out the correct todo, based on the part of the month we are in.
-#     for plant in plants:
-#         if not plant["todos"][f"todo_{today.month}_{month_period}"] == None:
-#             weekly_todos[plant["todos"][f"todo_{today.month}_{month_period}"]].append(
-#                 plant["name"]
-#             )
-
-#     return weekly_todos
+    return weekly_todos
 
 
 # def send_summary(db, mail, user_id):

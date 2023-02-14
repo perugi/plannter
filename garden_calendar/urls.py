@@ -10,4 +10,5 @@ urlpatterns = [
     path("password_change", views.password_change, name="password_change"),
     path("planner", views.planner, name="planner"),
     path("settings", views.settings, name="settings"),
+    path("weekly", views.weekly, name="weekly"),
 ]

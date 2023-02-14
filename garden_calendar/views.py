@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils import translation
 
 from .helpers.constants import WEEK_DAYS
-from .helpers.functions import prepare_plant_data
+from .helpers.functions import prepare_plant_data, prepare_weekly_todos
 from .models import Plant, User, AddEMail
 
 
@@ -260,4 +260,31 @@ def settings(request):
             "notifications": notifications,
             "language": language,
         },
+    )
+
+
+@login_required
+def weekly(request):
+    """Show the user a weekly summary of work to do in the garden."""
+
+    # if request.method == "POST":
+    #     send_summary(db, mail, session["user_id"])
+
+    # messages.success(
+    #     request, f"Summary sent to the e-mails, configured in your settings."
+    # )
+
+    try:
+        plants = request.user.selected_plants.all()
+        plants = prepare_plant_data(plants, request.user.language)
+    except ObjectDoesNotExist:
+        # User has not selected any plants yet.
+        plants = []
+
+    weekly_todos = prepare_weekly_todos(plants)
+
+    return render(
+        request,
+        "garden_calendar/weekly.html",
+        {"weekly_todos": weekly_todos, "plants": plants},
     )
