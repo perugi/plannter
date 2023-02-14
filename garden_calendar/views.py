@@ -19,7 +19,7 @@ def index(request):
     """Show the user-configured garden."""
 
     try:
-        plants = User.objects.get(id=request.user.id).selected_plants.all()
+        plants = request.user.selected_plants.all()
         # TODO for internationalization, select the language, based on the user settings.
         plants = prepare_plant_data(plants, "si")
     except ObjectDoesNotExist:
@@ -142,13 +142,12 @@ def planner(request):
 
     if request.method == "POST":
         # Clear the existing selected plants and proceed to add the ones that were selected in the POST request.
-        user = User.objects.get(id=request.user.id)
-        user.selected_plants.clear()
+        request.user.selected_plants.clear()
         for id in request.POST.keys():
             try:
                 id = int(id)
                 plant = Plant.objects.get(id=id)
-                user.selected_plants.add(plant)
+                request.user.selected_plants.add(plant)
             except ValueError:
                 # If we fail the conversion to int, we're looking at the csrf token.
                 pass
@@ -166,7 +165,7 @@ def planner(request):
         plants = prepare_plant_data(plants, "si")
 
         try:
-            selected_plants = User.objects.get(id=request.user.id).selected_plants.all()
+            selected_plants = request.user.selected_plants.all()
             selected_plants = [plant.id for plant in selected_plants]
         except ObjectDoesNotExist:
             # User has not selected any plants yet.
