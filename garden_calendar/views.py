@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils import translation
 
 from .helpers.constants import WEEK_DAYS
-from .helpers.functions import prepare_plant_data, prepare_weekly_todos
+from .helpers.functions import prepare_plant_data, prepare_weekly_todos, send_summary
 from .models import Plant, User, AddEMail
 
 
@@ -267,13 +267,6 @@ def settings(request):
 def weekly(request):
     """Show the user a weekly summary of work to do in the garden."""
 
-    # if request.method == "POST":
-    #     send_summary(db, mail, session["user_id"])
-
-    # messages.success(
-    #     request, f"Summary sent to the e-mails, configured in your settings."
-    # )
-
     try:
         plants = request.user.selected_plants.all()
         plants = prepare_plant_data(plants, request.user.language)
@@ -282,6 +275,13 @@ def weekly(request):
         plants = []
 
     weekly_todos = prepare_weekly_todos(plants)
+
+    if request.method == "POST":
+        send_summary(request, weekly_todos)
+
+        messages.success(
+            request, f"Summary sent to the e-mails, configured in your settings."
+        )
 
     return render(
         request,

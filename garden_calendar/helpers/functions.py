@@ -1,11 +1,8 @@
-import os, sys
-
-import urllib.parse
 from datetime import date
 
+from django.core.mail import send_mail
 
-# from flask import redirect, render_template, request, session
-from functools import wraps
+from garden_calendar.models import AddEMail
 
 from .constants import *
 
@@ -63,49 +60,47 @@ def prepare_weekly_todos(plants):
     return weekly_todos
 
 
-# def send_summary(db, mail, user_id):
-#     """Get the data and send a weekly summary mail to the e-mails, as defined in the user settings,
-#     with the todos and plants, as configured by the user."""
-#     today = date.today()
+def send_summary(request, weekly_todos):
+    """Get the data and send a weekly summary mail to the e-mails, as defined in the user settings,
+    with the todos and plants, as configured by the user."""
+    today = date.today()
 
-#     weekly_todos = prepare_weekly_todos(db, user_id)
+    username = request.user.username
 
-#     username = db.execute(
-#         "SELECT username FROM users WHERE id = ?",
-#         user_id,
-#     )[
-#         0
-#     ]["username"]
+    # Get the list of recipient e-mails, defined by the user (stored as comma separated string)
+    recipients = [request.user.email]
+    recipients += [
+        object.email for object in AddEMail.objects.filter(user=request.user)
+    ]
 
-#     # Get the list of recipient e-mails, defined by the user (stored as comma separated string)
-#     settings = db.execute("SELECT * FROM settings WHERE user_id = ?", user_id)
-#     recipients = settings[0]["emails"].split(",")
+    msg_subject = "Plannter Task Summary for " + today.strftime("%A, %b %-d")
 
-#     msg_subject = "Plannter Task Summary for " + today.strftime("%A, %b %-d")
+    msg_body = f"""
+    <p>Hello, {username}!</p>
+    <p>This is a summary of your weekly garden tasks:</p>
+    """
 
-#     msg_body = f"""
-#     <p>Hello, {username}!</p>
-#     <p>This is a summary of your weekly garden tasks:</p>
-#     """
+    for task in weekly_todos:
+        if weekly_todos[task]:
+            msg_body += (
+                f"<p><strong>{TASK_NAMES[task][request.user.language]}:</strong> "
+            )
+            for plant in weekly_todos[task]:
+                msg_body += f"{plant}, "
+            msg_body = msg_body[:-2] + "</p>"
 
-#     for task in weekly_todos:
-#         if weekly_todos[task]:
-#             msg_body += f"<p><strong>{config.TASK_NAMES[task][settings[0]['language']]}:</strong> "
-#             for plant in weekly_todos[task]:
-#                 msg_body += f"{plant}, "
-#             msg_body = msg_body[:-2] + "</p>"
+    msg_body += """
+    <p>&nbsp;</p>
+    <p>--</p>
+    <p>To configure your garden, visit the Plannter <a href="#">Planning</a> page. To modify the notification settings, visit the Plannter <a href="https://plannter-web.herokuapp.com/settings">Settings</a>.</p>
+    """
 
-#     msg_body += """
-#     <p>&nbsp;</p>
-#     <p>--</p>
-#     <p>To configure your garden, visit the Plannter <a href="https://plannter-web.herokuapp.com/planner">Planning</a> page. To modify the notification settings, visit the Plannter <a href="https://plannter-web.herokuapp.com/settings">Settings</a>.</p>
-#     """
-
-#     for recipient in recipients:
-#         msg = Message(
-#             msg_subject,
-#             recipients=[recipient],
-#             sender=("Plannter Notifications", "plannter.web@gmail.com"),
-#         )
-#         msg.html = msg_body
-#         mail.send(msg)
+    for recipient in recipients:
+        send_mail(
+            subject=msg_subject,
+            message="Test message",
+            html_message=msg_body,
+            from_email='"Plannter Notifications" <plannter.web@gmail.com>',
+            recipient_list=[recipient],
+            fail_silently=False,
+        )
