@@ -1,0 +1,102 @@
+{% extends "garden_calendar/layout.html" %}
+
+{% block title %}
+Planner
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <table class="plants">
+                <tr>
+                    <!-- TODO: when internationalization, get these from a babel-like lookup -->
+                    <td class="plants_data nowork">No work</td>
+                </tr>
+                <tr>
+                    <td class="plants_data sowing">Sow for seedlings</td>
+                </tr>
+                <tr>
+                    <td class="plants_data seedling">Prepare seedlings</td>
+                </tr>
+                <tr>
+                    <td class="plants_data transplanting">Transplant/Sow to garden</td>
+                </tr>
+                <tr>
+                    <td class="plants_data growth">Plant growth</td>
+                </tr>
+                <tr>
+                    <td class="plants_data harvest">Harvest</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-10">
+            <form action="{% url 'planner' %}" method="post">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="plants">
+                        <thead>
+                            <tr class="plants_row">
+                                <th class="plants_name" scope="col">Plant</th>
+                                <th class="plants_name" scope="col" colspan="3">Jan</th>
+                                <th class="plants_name" scope="col" colspan="3">Feb</th>
+                                <th class="plants_name" scope="col" colspan="3">Mar</th>
+                                <th class="plants_name" scope="col" colspan="3">Apr</th>
+                                <th class="plants_name" scope="col" colspan="3">May</th>
+                                <th class="plants_name" scope="col" colspan="3">Jun</th>
+                                <th class="plants_name" scope="col" colspan="3">Jul</th>
+                                <th class="plants_name" scope="col" colspan="3">Aug</th>
+                                <th class="plants_name" scope="col" colspan="3">Sep</th>
+                                <th class="plants_name" scope="col" colspan="3">Oct</th>
+                                <th class="plants_name" scope="col" colspan="3">Nov</th>
+                                <th class="plants_name" scope="col" colspan="3">Dec</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for plant in plants %}
+
+                            <tr class="plants_row">
+                                <td>
+                                    {% if plant.id in selected_plants %}
+                                    <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
+                                        name="{{ plant.id }}" checked>
+                                    {% else %}
+                                    <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
+                                        name="{{ plant.id }}">
+                                    {% endif %}
+                                </td>
+
+                                <td class="plants_name">{{ plant.name }}</td>
+
+                                {% for month, todo in plant.todos.items %}
+
+                                {% if todo == 'N' %}
+                                <td class="plants_data nowork"></td>
+                                {% elif todo == 'S' %}
+                                <td class="plants_data sowing"></td>
+                                {% elif todo == 'Pi' %}
+                                <td class="plants_data seedling"></td>
+                                {% elif todo == 'Pr' %}
+                                <td class="plants_data transplanting"></td>
+                                {% elif todo == 'R' %}
+                                <td class="plants_data growth"></td>
+                                {% elif todo == 'P' %}
+                                <td class="plants_data harvest"></td>
+                                {% endif %}
+
+                                {% endfor %}
+
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p></p>
+                <button class="btn btn-primary mt3" type="submit">Save Garden</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

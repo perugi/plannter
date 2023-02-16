@@ -1,0 +1,110 @@
+{% extends "garden_calendar/layout.html" %}
+{% load static %}
+
+{% block script %}
+<script src="{% static 'garden_calendar/mail_fields.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block main %}
+<div class="container text-end">
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <form method="post">
+                {% csrf_token %}
+                <table class="table">
+                    <tr>
+                        <th>
+                            Mail notifications:
+                        </th>
+                        <td>
+
+                            {% for day, notification in notifications.items %}
+
+                            {% if notification %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="{{ 'notify_' | add:day }}"
+                                    name="{{ 'notify_' | add:day }}" checked>
+                                <label class="form-check-label" for="{{ 'notify_' | add:day }}">{{ day|title }}</label>
+                            </div>
+                            {% else %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="{{ 'notify_' | add:day }}"
+                                    name="{{ 'notify_' | add:day }}">
+                                <label class="form-check-label" for="{{ 'notify_' | add:day }}">{{ day|title }}</label>
+                            </div>
+                            {% endif %}
+
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>E-mail(s):</th>
+                        <td>
+                            <div id="mail_fields">
+                                {% if not emails %}
+                                <div id="mail_group_1" class="input-group mb-3">
+                                    <input autocomplete="off" class="form-control" id="email_1" name="email_1"
+                                        placeholder="name@example.com" type="email">
+                                    <button class="btn btn-outline-secondary" onclick="addMailField(2)" type="button"
+                                        id="add_email">+</button>
+                                </div>
+                                {% else %}
+                                <!-- Generate the fields with the already input e-mails (slice out the last one) -->
+                                {% for email in emails|slice:"0:-1" %}
+                                <div id="mail_group_{{ forloop.counter }}" class="input-group mb-3">
+                                    <input autocomplete="off" class="form-control" id="email_{{ forloop.counter }}"
+                                        name="email_{{ forloop.counter }}" value="{{ email }}" type="email">
+                                </div>
+                                {% endfor %}
+                                <!-- The last e-mail needs the -/+ buttons -->
+                                <div id="mail_group_{{ emails|length }}" class="input-group mb-3">
+                                    <input autocomplete="off" class="form-control" id="email_{{ emails|length }}"
+                                        name="email_{{ emails|length }}" value="{{ emails|last }}" type="email">
+                                    {% if no_emails != 1 %}
+                                    <button class="btn btn-outline-secondary"
+                                        onclick="removeMailField('{{ emails|length }}')" type="button"
+                                        id="remove_email">-</button>
+                                    {% endif %}
+                                    <button class="btn btn-outline-secondary"
+                                        onclick="addMailField('{{ emails|length|add:1 }}')" type="button"
+                                        id="add_email">+</button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-muted text-center">Notifications are sent to specified addressed on
+                            the selected days at
+                            20:00 CET.
+                            <p>&nbsp;</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Plant name language:</th>
+                        <td>
+                            <select name="language" class="form-select">
+                                {% if language == "en" %}
+                                <option selected value="en">English</option>
+                                <option value="si">Slovenščina</option>
+                                {% elif language == "si" %}
+                                <option value="en">English</option>
+                                <option selected value="si">Slovenščina</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <p>&nbsp</p>
+                <div class="text-center">
+                    <button class="btn btn-primary mt3" type="submit">Save settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

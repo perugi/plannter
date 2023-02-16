@@ -1,0 +1,53 @@
+id,user_id,name_si,name_en,todo_1_1,todo_1_2,todo_1_3,todo_2_1,todo_2_2,todo_2_3,todo_3_1,todo_3_2,todo_3_3,todo_4_1,todo_4_2,todo_4_3,todo_5_1,todo_5_2,todo_5_3,todo_6_1,todo_6_2,todo_6_3,todo_7_1,todo_7_2,todo_7_3,todo_8_1,todo_8_2,todo_8_3,todo_9_1,todo_9_2,todo_9_3,todo_10_1,todo_10_2,todo_10_3,todo_11_1,todo_11_2,todo_11_3,todo_12_1,todo_12_2,todo_12_3
+1,1,Paradižnik,Tomato,N,N,N,N,N,N,S,S,S,Pi,R,R,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N
+2,1,Paprika in feferoni,Peppers,N,N,N,N,N,S,S,S,Pi,R,R,R,Pr,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N
+3,1,Jajčevec,Eggplant,N,N,N,N,N,S,S,S,Pi,R,R,R,Pr,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N
+4,1,Bob,Fava bean,N,N,N,Pr,Pr,Pr,Pr,R,R,R,R,R,R,R,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+5,1,Grah,Peas,N,N,N,N,N,N,Pr,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+6,1,Koruza,Corn,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,R,R,R,R,R,R,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N
+7,1,"Bučke, buče in kumare",Pumpkins & Cucumbers,N,N,N,N,N,N,N,N,N,N,S,S,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N
+8,1,Lubenica in melona,Melon,N,N,N,N,N,N,N,N,N,S,S,R,R,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N
+9,1,Nizki fižol,Beans (low-growing),N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,R,R,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N
+10,1,Visoki fižol,Beans (vining),N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,R,R,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N
+11,1,Brokoli 1,Broccoli 1,N,N,N,N,S,S,Pi,R,Pr,Pr,R,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+12,1,Brokoli 2,Broccoli 2,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,N,N,N,N,N
+13,1,Bazilika,Basil,N,N,N,N,N,N,N,S,S,R,R,R,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N
+14,1,Stebelna zelena,Celery,N,N,N,N,S,S,Pi,Pi,R,R,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N
+15,1,Zelje in gl. ohrovt 1,Cabbage and Savoy cabbage 1,N,N,N,N,S,S,Pi,R,Pr,Pr,R,R,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+16,1,Zelje in gl. ohrovt 2,Cabbage and Savoy cabbage 2,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,N,N,N,N,N
+17,1,Cvetača 1,Cauliflower 1,N,N,N,N,S,S,Pi,R,Pr,Pr,R,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+18,1,Cvetača 2,Cauliflower 2,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,N,N,N,N,N
+19,1,Kolerabica 1,Kohlrabi 1,N,N,N,N,S,S,Pi,R,Pr,Pr,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+20,1,Kolerabica 2,Kohlrabi 2,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N
+21,1,Blitva 1,Swiss Chard 1,N,N,N,N,S,S,Pi,R,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N
+22,1,Blitva 2,Swiss Chard 2,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N
+23,1,Peteršilj 1,Parsley 1,N,N,N,N,S,S,Pi,R,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N
+24,1,Peteršilj 2,Parsley 2,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N
+25,1,Por 1,Leek 1,N,N,N,S,S,S,R,R,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N
+26,1,Por 2,Leek 2,P,P,P,P,P,P,P,P,P,S,S,S,S,R,R,Pr,Pr,Pr,R,R,R,R,R,R,P,P,P,P,P,P,P,P,P,P,P,P
+27,1,Endivija in radič 1,Endive and Radicchio 1,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,Pr,Pr,R,R,P,P,P,P,P,P,P,P,P,P,P,N,N,N
+28,1,Endivija in radič 2,Endive and Radicchio 2,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,Pr,Pr,R,R,P,P,P,P,P,P,P,P,P,P,P
+29,1,Solate 1,Salads 1,N,N,N,N,S,S,Pi,Pr,Pr,R,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+30,1,Solate 2,Salads 2,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pi,Pr,Pr,R,P,P,P,P,P,P,N,N,N
+31,1,Koromač 1,Fennel 1,N,N,N,N,N,N,N,S,S,R,Pr,Pr,R,R,R,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+32,1,Koromač 2,Fennel 2,N,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,R,Pr,Pr,Pr,R,R,P,P,P,P,N,N,N,N,N,N,N,N,N,N
+33,1,Špinača 1,Spinach 1,N,N,N,N,N,N,N,Pr,Pr,Pr,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+34,1,Špinača 2,Spinach 2,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,Pr,Pr,R,P,P,P,P,P,P,P,P,P
+35,1,Rukola 1,Arugula 1,N,N,N,N,N,N,N,N,N,Pr,Pr,R,R,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+36,1,Rukola 2,Arugula 2,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,Pr,R,R,P,P,P,P,P,P,P,P,P
+37,1,Kitajsko zelje,Chinese cabbage,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,S,S,Pr,Pr,Pr,R,R,R,R,P,P,P,P,N,N,N,N,N
+38,1,Brstični in list. ohrovt,Brussel srpouts and Kale,P,P,P,P,P,P,P,P,P,N,N,N,S,S,Pi,R,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,P,P,P,P,P,P
+39,1,Motovilec,Cornsalad,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P
+40,1,Česen,Garlic,N,N,N,N,Pr,Pr,Pr,R,R,R,R,R,R,R,R,P,P,P,P,N,N,N,N,N,N,N,N,N,Pr,Pr,Pr,N,N,N,N,N
+41,1,Čebula 1,Onion 1,N,N,N,N,N,N,N,N,Pr,Pr,Pr,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,Pr,Pr,Pr,N,N,N,N,N
+42,1,Čebula 2,Onion 2,N,N,N,S,S,S,R,R,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+43,1,Gomoljna zelena,Celery (root),N,N,N,N,S,S,Pi,Pi,R,R,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N
+44,1,Rdeča pesa 1,Beet 1,N,N,N,N,N,N,N,N,Pr,Pr,R,R,R,R,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+45,1,Rdeča pesa 2,Beet 2,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,R,R,R,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N
+46,1,Redkvica,Horseradish,N,N,N,N,N,Pr,Pr,Pr,Pr,R,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+47,1,Korenje 1,Carrots 1,N,N,N,N,N,Pr,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N
+48,1,Korenje 2,Carrots 2,N,N,N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,Pr,Pr,R,R,R,P,P,P,P,P,P,P,P,P,N,N,N,N,N,N
+49,1,Koleraba in repa,Turnip,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,N,N,N,N,N,N
+50,1,Pastinak,Parsnip,N,N,N,N,N,N,N,N,Pr,Pr,Pr,R,R,R,R,R,R,R,R,R,R,R,P,P,P,P,P,P,P,P,N,N,N,N,N,N
+51,1,Krompir,Potato,N,N,N,N,N,N,N,N,Pr,Pr,Pr,R,R,R,R,P,P,P,P,P,P,P,N,N,N,N,N,N,N,N,N,N,N,N,N,N
+52,1,Sladki krompir,Sweet potato,N,N,N,N,N,N,N,S,S,R,Pi,R,R,Pr,Pr,Pr,R,R,R,R,R,R,R,R,R,P,P,P,N,N,N,N,N,N,N,N

@@ -1,0 +1,91 @@
+{% extends "garden_calendar/layout.html" %}
+{% load i18n %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+
+{% if not plants %}
+<p class="text-center">No plants selected. Visit the <a href="#">Planner</a> to do so.</a></p>
+
+{% else %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <table class="plants">
+                <tr>
+                    <td class="plants_data nowork">{% trans 'No work' %}</td>
+                </tr>
+                <tr>
+                    <td class="plants_data sowing">{% trans 'Sow for seedlings' %}</td>
+                </tr>
+                <tr>
+                    <td class="plants_data seedling">{% trans 'Prepare seedlings' %}</td>
+                </tr>
+                <tr>
+                    <td class="plants_data transplanting">{% trans 'Transplant/Sow to garden' %}</td>
+                </tr>
+                <tr>
+                    <td class="plants_data growth">{% trans 'Plant growth' %}</td>
+                </tr>
+                <tr>
+                    <td class="plants_data harvest">{% trans 'Harvest' %}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-10">
+            <div class="table-responsive">
+                <table class="plants">
+                    <thead>
+                        <tr class="plants_row">
+                            <th class="plants_name" scope="col">{% trans 'Plant' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Jan' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Feb' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Mar' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Apr' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'May' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Jun' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Jul' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Aug' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Sep' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Oct' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Nov' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Dec' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plant in plants %}
+
+                        <tr class="plants_row">
+                            <td class="plants_name" scope="row">{{ plant.name }}</td>
+
+                            {% for month, todo in plant.todos.items %}
+
+                            {% if todo == 'N' %}
+                            <td class="plants_data nowork"></td>
+                            {% elif todo == 'S' %}
+                            <td class="plants_data sowing"></td>
+                            {% elif todo == 'Pi' %}
+                            <td class="plants_data seedling"></td>
+                            {% elif todo == 'Pr' %}
+                            <td class="plants_data transplanting"></td>
+                            {% elif todo == 'R' %}
+                            <td class="plants_data growth"></td>
+                            {% elif todo == 'P' %}
+                            <td class="plants_data harvest"></td>
+                            {% endif %}
+
+                            {% endfor %}
+
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}

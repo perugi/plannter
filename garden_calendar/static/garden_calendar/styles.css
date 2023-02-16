@@ -1,0 +1,70 @@
+/* Size for brand */
+nav .navbar-brand {
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .blue {
+    color: #537fbe;
+}
+
+nav .navbar-brand .red {
+    color: #ea433b;
+}
+
+nav .navbar-brand .yellow {
+    color: #f5b82e;
+}
+
+nav .navbar-brand .green {
+    color: #2e944b;
+}
+
+/* Colors for plants tables */
+.nowork {
+    background-color: rgb(200, 200, 200);
+}
+
+.sowing {
+    background-color: lightgreen;
+}
+
+.seedling {
+    background-color: green;
+}
+
+.transplanting {
+    background-color: black;
+    color: white;
+}
+
+.growth {
+    background-color: rgb(100, 100, 100);
+}
+
+.harvest {
+    background-color: orange;
+}
+
+.plants {
+    border: 1px solid;
+}
+
+.plants_row {
+    border: 1px solid;
+}
+
+.plants_data {
+    width: 2%;
+    border: 1px solid;
+    border-color: white;
+}
+
+.plants_name {
+    width: 10%;
+    border: 1px solid;
+}
+
+#planner_select {
+    width: 4%;
+}
