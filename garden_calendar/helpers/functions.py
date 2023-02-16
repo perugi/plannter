@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.core.mail import send_mail
+from django.core import mail
 
 from garden_calendar.models import AddEMail
 
@@ -60,18 +60,16 @@ def prepare_weekly_todos(plants):
     return weekly_todos
 
 
-def send_summary(request, weekly_todos):
+def send_summary(user, weekly_todos):
     """Get the data and send a weekly summary mail to the e-mails, as defined in the user settings,
     with the todos and plants, as configured by the user."""
     today = date.today()
 
-    username = request.user.username
+    username = user.username
 
     # Get the list of recipient e-mails, defined by the user (stored as comma separated string)
-    recipients = [request.user.email]
-    recipients += [
-        object.email for object in AddEMail.objects.filter(user=request.user)
-    ]
+    recipients = [user.email]
+    recipients += [object.email for object in AddEMail.objects.filter(user=user)]
 
     msg_subject = "Plannter Task Summary for " + today.strftime("%A, %b %-d")
 
@@ -82,9 +80,7 @@ def send_summary(request, weekly_todos):
 
     for task in weekly_todos:
         if weekly_todos[task]:
-            msg_body += (
-                f"<p><strong>{TASK_NAMES[task][request.user.language]}:</strong> "
-            )
+            msg_body += f"<p><strong>{TASK_NAMES[task][user.language]}:</strong> "
             for plant in weekly_todos[task]:
                 msg_body += f"{plant}, "
             msg_body = msg_body[:-2] + "</p>"
@@ -92,15 +88,17 @@ def send_summary(request, weekly_todos):
     msg_body += """
     <p>&nbsp;</p>
     <p>--</p>
-    <p>To configure your garden, visit the Plannter <a href="#">Planning</a> page. To modify the notification settings, visit the Plannter <a href="https://plannter-web.herokuapp.com/settings">Settings</a>.</p>
+    <p>To configure your garden, visit the Plannter <a href="#">Planning</a> page. To modify the notification settings, visit the Plannter <a href="#">Settings</a>.</p>
     """
 
-    for recipient in recipients:
-        send_mail(
-            subject=msg_subject,
-            message="Test message",
-            html_message=msg_body,
-            from_email='"Plannter Notifications" <plannter.web@gmail.com>',
-            recipient_list=[recipient],
-            fail_silently=False,
-        )
+    with mail.get_connection() as connection:
+        for recipient in recipients:
+            mail.send_mail(
+                subject=msg_subject,
+                message=msg_body,
+                html_message=msg_body,
+                from_email='"Plannter Notifications" <plannter.web@gmail.com>',
+                recipient_list=[recipient],
+                fail_silently=False,
+                connection=connection,
+            )

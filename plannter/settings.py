@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_apscheduler",
 ]
 
 MIDDLEWARE = [
@@ -121,7 +122,7 @@ LANGUAGES = [
 
 LANGUAGE_CODE = "en"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Ljubljana"
 
 USE_I18N = True
 
@@ -140,10 +141,25 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # Environment variables for sending mail
 env = environ.Env()
 environ.Env.read_env()
 
+# Email configuration
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = "465"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
 EMAIL_HOST_USER = env("EMAIL_USERNAME")
 EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
+
+# This scheduler config will:
+# - Store jobs in the project database
+# - Execute jobs in threads inside the application process
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "django_apscheduler.jobstores:DjangoJobStore"
+    },
+    "apscheduler.executors.processpool": {"type": "threadpool"},
+}
+SCHEDULER_AUTOSTART = True

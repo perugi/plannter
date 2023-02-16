@@ -185,7 +185,7 @@ class SettingsForm(ModelForm):
 
 
 @login_required
-def settings(request):
+def user_settings(request):
     """Allow the user to change the account settings."""
 
     if request.method == "POST":
@@ -277,7 +277,7 @@ def weekly(request):
     weekly_todos = prepare_weekly_todos(plants)
 
     if request.method == "POST":
-        send_summary(request, weekly_todos)
+        send_summary(request.user, weekly_todos)
 
         messages.success(
             request, f"Summary sent to the e-mails, configured in your settings."
