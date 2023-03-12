@@ -42,8 +42,8 @@
             <div class="collapse navbar-collapse" id="navbar">
                 {% if user.is_authenticated %}
                 <ul class="navbar-nav me-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/planner">Planner</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/weekly">Weekly</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'planner' %}">Planner</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'weekly' %}">Weekly</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto mt-2">
                     <li class="nav-item dropdown">
@@ -52,13 +52,13 @@
                             Logged in as <b>{{ user.username }}</b>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/password_change">Change password</a>
+                            <li><a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
                             </li>
-                            <li><a class="dropdown-item" href="/logout">Log out</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Log out</a></li>
                         </ul>
                     </li>
                 </ul>
