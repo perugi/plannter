@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 23:14+0100\n"
+"POT-Creation-Date: 2023-03-14 23:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,78 +17,105 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/garden_calendar/index.html:19
+#: templates/garden_calendar/index.html:31
+#: templates/garden_calendar/planner.html:27
 msgid "No work"
 msgstr "Ni dela z rastlino"
 
-#: templates/garden_calendar/index.html:22
+#: templates/garden_calendar/index.html:34
+#: templates/garden_calendar/planner.html:30
+#: templates/garden_calendar/weekly.html:22
 msgid "Sow for seedlings"
 msgstr "Setev za vzgojo sadik"
 
-#: templates/garden_calendar/index.html:25
+#: templates/garden_calendar/index.html:37
+#: templates/garden_calendar/planner.html:33
+#: templates/garden_calendar/weekly.html:24
 msgid "Prepare seedlings"
 msgstr "Pikiranje sadik"
 
-#: templates/garden_calendar/index.html:28
+#: templates/garden_calendar/index.html:40
+#: templates/garden_calendar/planner.html:36
+#: templates/garden_calendar/weekly.html:26
 msgid "Transplant/Sow to garden"
 msgstr "Presajanje ali setev na gredo"
 
-#: templates/garden_calendar/index.html:31
+#: templates/garden_calendar/index.html:43
+#: templates/garden_calendar/planner.html:39
+#: templates/garden_calendar/weekly.html:28
 msgid "Plant growth"
 msgstr "Rast"
 
-#: templates/garden_calendar/index.html:34
+#: templates/garden_calendar/index.html:46
+#: templates/garden_calendar/planner.html:42
+#: templates/garden_calendar/weekly.html:30
 msgid "Harvest"
 msgstr "Pridelek"
 
-#: templates/garden_calendar/index.html:43
-msgid "Plant"
-msgstr "Rastlina"
-
-#: templates/garden_calendar/index.html:44
+#: templates/garden_calendar/index.html:56
+#: templates/garden_calendar/planner.html:55
 msgid "Jan"
 msgstr "Jan"
 
-#: templates/garden_calendar/index.html:45
+#: templates/garden_calendar/index.html:57
+#: templates/garden_calendar/planner.html:56
 msgid "Feb"
 msgstr "Feb"
 
-#: templates/garden_calendar/index.html:46
+#: templates/garden_calendar/index.html:58
+#: templates/garden_calendar/planner.html:57
 msgid "Mar"
 msgstr "Mar"
 
-#: templates/garden_calendar/index.html:47
+#: templates/garden_calendar/index.html:59
+#: templates/garden_calendar/planner.html:58
 msgid "Apr"
 msgstr "Apr"
 
-#: templates/garden_calendar/index.html:48
+#: templates/garden_calendar/index.html:60
+#: templates/garden_calendar/planner.html:59
 msgid "May"
 msgstr "Maj"
 
-#: templates/garden_calendar/index.html:49
+#: templates/garden_calendar/index.html:61
+#: templates/garden_calendar/planner.html:60
 msgid "Jun"
 msgstr "Jun"
 
-#: templates/garden_calendar/index.html:50
+#: templates/garden_calendar/index.html:62
+#: templates/garden_calendar/planner.html:61
 msgid "Jul"
 msgstr "Jul"
 
-#: templates/garden_calendar/index.html:51
+#: templates/garden_calendar/index.html:63
+#: templates/garden_calendar/planner.html:62
 msgid "Aug"
 msgstr "Avg"
 
-#: templates/garden_calendar/index.html:52
+#: templates/garden_calendar/index.html:64
+#: templates/garden_calendar/planner.html:63
 msgid "Sep"
 msgstr "Sep"
 
-#: templates/garden_calendar/index.html:53
+#: templates/garden_calendar/index.html:65
+#: templates/garden_calendar/planner.html:64
 msgid "Oct"
 msgstr "Okt"
 
-#: templates/garden_calendar/index.html:54
+#: templates/garden_calendar/index.html:66
+#: templates/garden_calendar/planner.html:65
 msgid "Nov"
 msgstr "Nov"
 
-#: templates/garden_calendar/index.html:55
+#: templates/garden_calendar/index.html:67
+#: templates/garden_calendar/planner.html:66
 msgid "Dec"
 msgstr "Dec"
+
+#: templates/garden_calendar/planner.html:53
+msgid "Select"
+msgstr "Izberi"
+
+#: templates/garden_calendar/planner.html:54
+msgid "Plant"
+msgstr "Rastlina"
