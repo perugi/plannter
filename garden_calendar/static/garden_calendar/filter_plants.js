@@ -2,18 +2,18 @@ plantFilter = document.querySelector('#plant-filter');
 plantFilter.addEventListener('input', filterPlants);
 
 function filterPlants() {
-    console.log('filter')
-    plants = document.querySelectorAll('.plants_row');
-    plants = Array.from(plants).slice(1);
-    console.log(plants);
+    plantRows = document.querySelectorAll('.plants_row');
+    plantRows = Array.from(plantRows).slice(1);
 
     filterString = plantFilter.value.toLowerCase();
 
-    plants.forEach(plant => {
-        if (plant.firstElementChild.textContent.toLowerCase().includes(filterString)) {
-            plant.hidden = false;
+    plantRows.forEach(plantRow => {
+        plant = plantRow.querySelector('.plants_name');
+
+        if (plant.textContent.toLowerCase().includes(filterString)) {
+            plantRow.hidden = false;
         } else {
-            plant.hidden = true;
+            plantRow.hidden = true;
         }
     });
 

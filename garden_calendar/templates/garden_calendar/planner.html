@@ -1,11 +1,24 @@
 {% extends "garden_calendar/layout.html" %}
+{% load static %}
 
 {% block title %}
 Planner
 {% endblock %}
 
+{% block script %}
+<script src="{% static 'garden_calendar/filter_plants.js' %}" defer></script>
+{% endblock %}
+
 {% block main %}
 <div class="container">
+    <div class="row justify-content-end">
+        <div class="col"></div>
+        <div class="col">
+            <label for="plant-filter">Filter plant list:</label>
+            <input type="text" id="plant-filter" class=""></input>
+        </div>
+    </div>
+    <p></p>
     <div class="row">
         <div class="col">
             <table class="plants">
@@ -37,6 +50,7 @@ Planner
                     <table class="plants">
                         <thead>
                             <tr class="plants_row">
+                                <th class="plants_name" scope="col">Select</th>
                                 <th class="plants_name" scope="col">Plant</th>
                                 <th class="plants_name" scope="col" colspan="3">Jan</th>
                                 <th class="plants_name" scope="col" colspan="3">Feb</th>
