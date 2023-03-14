@@ -55,13 +55,17 @@ nav .navbar-brand .green {
 }
 
 .plants_data {
-    width: 2%;
+    width: 10px;
     border: 1px solid;
     border-color: white;
 }
 
+.plants_data.legend {
+    width: 150px;
+}
+
 .plants_name {
-    width: 10%;
+    width: 100px;
     border: 1px solid;
 }
 

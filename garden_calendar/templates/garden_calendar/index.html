@@ -1,37 +1,49 @@
 {% extends "garden_calendar/layout.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}
 Home
 {% endblock %}
 
-{% block main %}
+{% block script %}
+<script src="{% static 'garden_calendar/filter_plants.js' %}" defer></script>
+{% endblock %}
 
+{% block main %}
 {% if not plants %}
-<p class="text-center">No plants selected. Visit the <a href="#">Planner</a> to do so.</a></p>
+<p class="text-center">No plants selected.Visit the < a href="#"> Planner</a> to do so.</a></p>
 
 {% else %}
 <div class="container">
+    <div class="row justify-content-end">
+        <div class="col"></div>
+        <div class="col">
+            <label for="plant-filter">Filter plant list:</label>
+            <input type="text" id="plant-filter" class=""></input>
+        </div>
+    </div>
+    <p></p>
     <div class="row">
         <div class="col">
             <table class="plants">
                 <tr>
-                    <td class="plants_data nowork">{% trans 'No work' %}</td>
+                    <td class="plants_data legend nowork">{% trans 'No work' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data sowing">{% trans 'Sow for seedlings' %}</td>
+                    <td class="plants_data legend sowing">{% trans 'Sow for seedlings' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data seedling">{% trans 'Prepare seedlings' %}</td>
+                    <td class="plants_data legend seedling">{% trans 'Prepare seedlings' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data transplanting">{% trans 'Transplant/Sow to garden' %}</td>
+                    <td class="plants_data legend transplanting">{% trans 'Transplant/Sow to garden' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data growth">{% trans 'Plant growth' %}</td>
+                    <td class="plants_data legend growth">{% trans 'Plant growth' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data harvest">{% trans 'Harvest' %}</td>
+                    <td class="plants_data legend harvest">{% trans 'Harvest' %}</td>
                 </tr>
             </table>
         </div>
@@ -40,7 +52,7 @@ Home
                 <table class="plants">
                     <thead>
                         <tr class="plants_row">
-                            <th class="plants_name" scope="col">{% trans 'Plant' %}</th>
+                            <th class="plants_name" scope="col">Plant</th>
                             <th class="plants_name" scope="col" colspan="3">{% trans 'Jan' %}</th>
                             <th class="plants_name" scope="col" colspan="3">{% trans 'Feb' %}</th>
                             <th class="plants_name" scope="col" colspan="3">{% trans 'Mar' %}</th>

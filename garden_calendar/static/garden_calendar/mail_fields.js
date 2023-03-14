@@ -1,5 +1,5 @@
 function addMailField(id) {
-    
+
     const MAX_MAILS = 5
 
     id = Number(id)
@@ -14,7 +14,7 @@ function addMailField(id) {
 
         // Get the container which houses the mail fields, in order to append a new input field.
         var container = document.getElementById("mail_fields");
-        
+
         // Create the elements needed for a new mail field.
         var input_group = document.createElement("div");
         input_group.setAttribute("class", "input-group mb-3");
