@@ -5,10 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.forms import ModelForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import translation
+from django.views.decorators.csrf import csrf_exempt
 
 from .helpers.constants import WEEK_DAYS
 from .helpers.functions import prepare_plant_data, prepare_weekly_todos, send_summary
@@ -136,9 +137,12 @@ def password_change(request):
         return render(request, "garden_calendar/password_change.html")
 
 
+@csrf_exempt
 @login_required
 def planner(request):
     """Plan the garden by selecting the plants to be grown."""
+    if request.method == "PUT":
+        return JsonResponse({"message": "Garden saved successfully"}, status=200)
 
     if request.method == "POST":
         # Clear the existing selected plants and proceed to add the ones that were selected in the POST request.

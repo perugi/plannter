@@ -8,6 +8,7 @@ Planner
 
 {% block script %}
 <script src="{% static 'garden_calendar/filter_plants.js' %}" defer></script>
+<script src="{% static 'garden_calendar/modify_garden.js' %}" defer></script>
 {% endblock %}
 
 {% block main %}
@@ -44,72 +45,70 @@ Planner
             </table>
         </div>
         <div class="col-10">
-            <form action="{% url 'planner' %}" method="post">
-                {% csrf_token %}
-                <div class="table-responsive">
-                    <table class="plants">
-                        <thead>
-                            <tr class="plants_row">
-                                <th class="plants_name" scope="col">{% trans 'Select' %}</th>
-                                <th class="plants_name" scope="col">{% trans 'Plant' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Jan' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Feb' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Mar' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Apr' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'May' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Jun' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Jul' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Aug' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Sep' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Oct' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Nov' %}</th>
-                                <th class="plants_name" scope="col" colspan="3">{% trans 'Dec' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for plant in plants %}
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="plants">
+                    <thead>
+                        <tr class="plants_row">
+                            <th class="plants_name" scope="col">{% trans 'Select' %}</th>
+                            <th class="plants_name" scope="col">{% trans 'Plant' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Jan' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Feb' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Mar' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Apr' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'May' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Jun' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Jul' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Aug' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Sep' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Oct' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Nov' %}</th>
+                            <th class="plants_name" scope="col" colspan="3">{% trans 'Dec' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plant in plants %}
 
-                            <tr class="plants_row">
-                                <td>
-                                    {% if plant.id in selected_plants %}
-                                    <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
-                                        name="{{ plant.id }}" checked>
-                                    {% else %}
-                                    <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
-                                        name="{{ plant.id }}">
-                                    {% endif %}
-                                </td>
-
-                                <td class="plants_name">{{ plant.name }}</td>
-
-                                {% for month, todo in plant.todos.items %}
-
-                                {% if todo == 'N' %}
-                                <td class="plants_data nowork"></td>
-                                {% elif todo == 'S' %}
-                                <td class="plants_data sowing"></td>
-                                {% elif todo == 'Pi' %}
-                                <td class="plants_data seedling"></td>
-                                {% elif todo == 'Pr' %}
-                                <td class="plants_data transplanting"></td>
-                                {% elif todo == 'R' %}
-                                <td class="plants_data growth"></td>
-                                {% elif todo == 'P' %}
-                                <td class="plants_data harvest"></td>
+                        <tr class="plants_row">
+                            <td>
+                                {% if plant.id in selected_plants %}
+                                <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
+                                    name="{{ plant.id }}" checked>
+                                {% else %}
+                                <input class="form-check-input" type="checkbox" id="{{ plant.id }}"
+                                    name="{{ plant.id }}">
                                 {% endif %}
+                            </td>
 
-                                {% endfor %}
+                            <td class="plants_name">{{ plant.name }}</td>
 
-                            </tr>
+                            {% for month, todo in plant.todos.items %}
+
+                            {% if todo == 'N' %}
+                            <td class="plants_data nowork"></td>
+                            {% elif todo == 'S' %}
+                            <td class="plants_data sowing"></td>
+                            {% elif todo == 'Pi' %}
+                            <td class="plants_data seedling"></td>
+                            {% elif todo == 'Pr' %}
+                            <td class="plants_data transplanting"></td>
+                            {% elif todo == 'R' %}
+                            <td class="plants_data growth"></td>
+                            {% elif todo == 'P' %}
+                            <td class="plants_data harvest"></td>
+                            {% endif %}
 
                             {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <p></p>
-                <button class="btn btn-primary mt3" type="submit">Save Garden</button>
 
-            </form>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p></p>
+            <button id="save-btn" class="btn btn-primary mt3">Save Garden</button>
+
         </div>
     </div>
 </div>
