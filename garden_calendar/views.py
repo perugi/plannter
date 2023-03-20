@@ -172,42 +172,23 @@ def toggle_plant(request):
 
 @login_required
 def planner(request):
-    """Plan the garden by selecting the plants to be grown."""
-    if request.method == "POST":
-        # Clear the existing selected plants and proceed to add the ones that were selected in the POST request.
-        request.user.selected_plants.clear()
-        for id in request.POST.keys():
-            try:
-                id = int(id)
-                plant = Plant.objects.get(id=id)
-                request.user.selected_plants.add(plant)
-            except ValueError:
-                # If we fail the conversion to int, we're looking at the csrf token.
-                pass
-            except ObjectDoesNotExist:
-                messages.warning(request, f"Plant id {id} not found.")
-                continue
+    """Display the garden planner with the default and user created plants."""
 
-        messages.success(request, "Garden successfully updated!")
+    plants = Plant.objects.all().filter(creator_id__in=[1, request.user.id])
+    plants = prepare_plant_data(plants, request.user.language)
 
-        return HttpResponseRedirect(reverse("index"))
+    try:
+        selected_plants = request.user.selected_plants.all()
+        selected_plants = [plant.id for plant in selected_plants]
+    except ObjectDoesNotExist:
+        # User has not selected any plants yet.
+        selected_plants = []
 
-    else:
-        plants = Plant.objects.all().filter(creator_id__in=[1, request.user.id])
-        plants = prepare_plant_data(plants, request.user.language)
-
-        try:
-            selected_plants = request.user.selected_plants.all()
-            selected_plants = [plant.id for plant in selected_plants]
-        except ObjectDoesNotExist:
-            # User has not selected any plants yet.
-            selected_plants = []
-
-        return render(
-            request,
-            "garden_calendar/planner.html",
-            {"plants": plants, "selected_plants": selected_plants},
-        )
+    return render(
+        request,
+        "garden_calendar/planner.html",
+        {"plants": plants, "selected_plants": selected_plants},
+    )
 
 
 class SettingsForm(ModelForm):
