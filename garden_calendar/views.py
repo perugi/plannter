@@ -148,7 +148,11 @@ def toggle_plant(request):
 
     data = json.loads(request.body)
     id, new_state = (data["id"], data["newState"])
-    plant = Plant.objects.get(id=id)
+
+    try:
+        plant = Plant.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return JsonResponse({"error": f"Plant id {id} not found."})
 
     # Check that the new state, ass messaged by the front-end matches the record in the database.
     if (new_state and plant in request.user.selected_plants.all()) or (
