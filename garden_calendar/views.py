@@ -169,9 +169,6 @@ def toggle_plant(request):
 @login_required
 def planner(request):
     """Plan the garden by selecting the plants to be grown."""
-    if request.method == "PUT":
-        return JsonResponse({"message": "Garden saved successfully"}, status=200)
-
     if request.method == "POST":
         # Clear the existing selected plants and proceed to add the ones that were selected in the POST request.
         request.user.selected_plants.clear()
