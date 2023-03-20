@@ -1,22 +1,15 @@
-saveBtn = document.querySelector("#save-btn");
 selectChecks = document.querySelectorAll(".form-check-input");
 
-saveBtn.addEventListener('click', saveGarden);
+selectChecks.forEach(selectCheck => selectCheck.addEventListener('change', e => togglePlant(e)));
 
-function saveGarden() {
-    selectedPlants = [];
-    selectChecks.forEach(check => {
-        if (check.checked) selectedPlants.push(check.id);
-    });
+function togglePlant(e) {
+    // Make a PUT call to edit the plant state in the database
 
-    fetch("")
-
-    console.log(selectedPlants);
-    // Make a PUT call to edit the garden in the database.
-    fetch('/planner', {
+    fetch('/toggle_plant', {
         method: 'PUT',
         body: JSON.stringify({
-            selectedPlants: selectedPlants,
+            id: e.target.id,
+            newState: e.target.checked
         }),
     })
         .then(response => response.json())
@@ -24,5 +17,4 @@ function saveGarden() {
             console.log(result)
         })
 
-    return false;
 }

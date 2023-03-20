@@ -15,6 +15,8 @@ from .helpers.constants import WEEK_DAYS
 from .helpers.functions import prepare_plant_data, prepare_weekly_todos, send_summary
 from .models import Plant, User, AddEMail
 
+import json
+
 
 @login_required
 def index(request):
@@ -138,6 +140,32 @@ def password_change(request):
 
 
 @csrf_exempt
+@login_required
+def toggle_plant(request):
+    # Changing the state of the plant must be via PUT.
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required."}, status=400)
+
+    data = json.loads(request.body)
+    id, new_state = (data["id"], data["newState"])
+    plant = Plant.objects.get(id=id)
+
+    # Check that the new state, ass messaged by the front-end matches the record in the database.
+    if (new_state and plant in request.user.selected_plants.all()) or (
+        not new_state and plant not in request.user.selected_plants.all()
+    ):
+        return JsonResponse(
+            {"error": "New plant state does not match the database record."}, status=400
+        )
+
+    if new_state:
+        request.user.selected_plants.add(plant)
+    else:
+        request.user.selected_plants.remove(plant)
+
+    return JsonResponse({"message": "Garden saved successfully"}, status=200)
+
+
 @login_required
 def planner(request):
     """Plan the garden by selecting the plants to be grown."""

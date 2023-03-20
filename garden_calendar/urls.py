@@ -11,4 +11,5 @@ urlpatterns = [
     path("planner", views.planner, name="planner"),
     path("settings", views.user_settings, name="settings"),
     path("weekly", views.weekly, name="weekly"),
+    path("toggle_plant", views.toggle_plant, name="toggle_plant"),
 ]
