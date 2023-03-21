@@ -21,28 +21,28 @@ nav .navbar-brand .green {
 }
 
 /* Colors for plants tables */
-.nowork {
+.N {
     background-color: rgb(200, 200, 200);
 }
 
-.sowing {
+.S {
     background-color: lightgreen;
 }
 
-.seedling {
+.Pi {
     background-color: green;
 }
 
-.transplanting {
+.Pr {
     background-color: black;
     color: white;
 }
 
-.growth {
+.R {
     background-color: rgb(100, 100, 100);
 }
 
-.harvest {
+.P {
     background-color: orange;
 }
 

@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils import translation
 from django.views.decorators.csrf import csrf_exempt
 
-from .helpers.constants import WEEK_DAYS
+from .helpers.constants import WEEK_DAYS, VALID_MONTH_NAMES
 from .helpers.functions import prepare_plant_data, prepare_weekly_todos, send_summary
 from .models import Plant, User, AddEMail
 
@@ -152,7 +152,7 @@ def toggle_plant(request):
     try:
         plant = Plant.objects.get(id=id)
     except ObjectDoesNotExist:
-        return JsonResponse({"error": f"Plant id {id} not found."})
+        return JsonResponse({"error": f"Plant id {id} not found."}, status=400)
 
     # Check that the new state, ass messaged by the front-end matches the record in the database.
     if (new_state and plant in request.user.selected_plants.all()) or (
@@ -166,6 +166,31 @@ def toggle_plant(request):
         request.user.selected_plants.add(plant)
     else:
         request.user.selected_plants.remove(plant)
+
+    return JsonResponse({"message": "Garden saved successfully"}, status=200)
+
+
+@csrf_exempt
+@login_required
+def edit_activity(request):
+    # Changing the plant activity must be via PUT.
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required."}, status=400)
+
+    data = json.loads(request.body)
+    id, month, new_activity = (data["id"], data["month"], data["newActivity"])
+
+    print(id, month, new_activity)
+
+    try:
+        plant = Plant.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return JsonResponse({"error": f"Plant id {id} not found."}, status=400)
+
+    todos = plant.todos.split(",")
+    todos[VALID_MONTH_NAMES.index(month)] = new_activity
+    plant.todos = ",".join(todos)
+    plant.save()
 
     return JsonResponse({"message": "Garden saved successfully"}, status=200)
 

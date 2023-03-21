@@ -25,22 +25,22 @@ Planner
         <div class="col">
             <table class="plants">
                 <tr>
-                    <td class="plants_data legend nowork">{% trans 'No work' %}</td>
+                    <td class="plants_data legend N">{% trans 'No work' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data legend sowing">{% trans 'Sow for seedlings' %}</td>
+                    <td class="plants_data legend S">{% trans 'Sow for seedlings' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data legend seedling">{% trans 'Prepare seedlings' %}</td>
+                    <td class="plants_data legend Pi">{% trans 'Prepare seedlings' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data legend transplanting">{% trans 'Transplant/Sow to garden' %}</td>
+                    <td class="plants_data legend Pr">{% trans 'Transplant/Sow to garden' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data legend growth">{% trans 'Plant growth' %}</td>
+                    <td class="plants_data legend R">{% trans 'Plant growth' %}</td>
                 </tr>
                 <tr>
-                    <td class="plants_data legend harvest">{% trans 'Harvest' %}</td>
+                    <td class="plants_data legend P">{% trans 'Harvest' %}</td>
                 </tr>
             </table>
         </div>
@@ -84,19 +84,7 @@ Planner
 
                             {% for month, todo in plant.todos.items %}
 
-                            {% if todo == 'N' %}
-                            <td class="plants_data nowork"></td>
-                            {% elif todo == 'S' %}
-                            <td class="plants_data sowing"></td>
-                            {% elif todo == 'Pi' %}
-                            <td class="plants_data seedling"></td>
-                            {% elif todo == 'Pr' %}
-                            <td class="plants_data transplanting"></td>
-                            {% elif todo == 'R' %}
-                            <td class="plants_data growth"></td>
-                            {% elif todo == 'P' %}
-                            <td class="plants_data harvest"></td>
-                            {% endif %}
+                            <td class="plants_data {{ todo }}" data-id="{{ plant.id }}" data-month="{{ month }}"></td>
 
                             {% endfor %}
 
