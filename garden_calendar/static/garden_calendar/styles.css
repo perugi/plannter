@@ -34,12 +34,13 @@ nav .navbar-brand .green {
 }
 
 .transplanting {
-    background-color: black;
+    background-color: rgb(60, 60, 60);
     color: white;
 }
 
 .growth {
     background-color: rgb(100, 100, 100);
+    color: white;
 }
 
 .harvest {
@@ -60,6 +61,10 @@ nav .navbar-brand .green {
     border-color: white;
 }
 
+.plants_data:nth-child(3n+2) {
+    border-right: 1px solid black;
+}
+
 .plants_data.legend {
     width: 150px;
 }
@@ -71,4 +76,10 @@ nav .navbar-brand .green {
 
 #planner_select {
     width: 4%;
+}
+
+#legend,
+#table_header {
+    position: sticky;
+    top: 20px;
 }
