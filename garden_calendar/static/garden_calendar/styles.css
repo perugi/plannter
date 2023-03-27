@@ -78,8 +78,7 @@ nav .navbar-brand .green {
     width: 4%;
 }
 
-#legend,
-#table_header {
+#legend {
     position: sticky;
     top: 20px;
 }
